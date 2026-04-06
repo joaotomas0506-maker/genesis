@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Genesis Signal — Briefing Diário</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --color-primary: #1565C0;
+            --color-primary-dark: #0D47A1;
+            --color-primary-light: #1E88E5;
+            --color-success: #2ECC71;
+            --color-warning: #F39C12;
+            --color-danger: #E74C3C;
+            --color-bg-light: #FFFFFF;
+            --color-bg-light-secondary: #F8F9FA;
+            --color-bg-dark: #0F0F0F;
+            --color-bg-dark-secondary: #1A1A1A;
+            --color-text-light: #1A1A1A;
+            --color-text-light-secondary: #555555;
+            --color-text-dark: #E8E8E8;
+            --color-text-dark-secondary: #B0B0B0;
+            --color-border-light: #E0E0E0;
+            --color-border-dark: #333333;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-xxl: 4rem;
+            --font-family-body: 'Inter', sans-serif;
+            --font-family-display: 'Poppins', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-family-body); background-color: var(--color-bg-light); color: var(--color-text-light); line-height: 1.6; }
+        body.dark-mode { background-color: var(--color-bg-dark); color: var(--color-text-dark); }
+
+        header { position: fixed; top: 0; width: 100%; height: 80px; background-color: var(--color-bg-light); border-bottom: 1px solid var(--color-border-light); display: flex; justify-content: space-between; align-items: center; padding: 0 var(--spacing-lg); z-index: 1000; }
+        body.dark-mode header { background-color: var(--color-bg-dark-secondary); border-bottom-color: var(--color-border-dark); }
+        .navbar-logo { font-family: var(--font-family-display); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); text-decoration: none; }
+        .navbar-links { display: flex; gap: var(--spacing-xl); list-style: none; }
+        .navbar-links a { text-decoration: none; color: var(--color-text-light); font-weight: 500; }
+        body.dark-mode .navbar-links a { color: var(--color-text-dark); }
+        .navbar-links a:hover { color: var(--color-primary); }
+        .navbar-controls { display: flex; gap: var(--spacing-md); align-items: center; }
+        .language-toggle { display: flex; gap: 0.5rem; background-color: var(--color-bg-light-secondary); padding: 0.4rem; border-radius: 8px; border: none; }
+        body.dark-mode .language-toggle { background-color: var(--color-bg-dark); }
+        .language-toggle button { background: none; border: none; padding: 0.4rem 0.8rem; cursor: pointer; border-radius: 6px; font-weight: 600; font-size: 0.85rem; color: var(--color-text-light-secondary); }
+        body.dark-mode .language-toggle button { color: var(--color-text-dark-secondary); }
+        .language-toggle button.active { background-color: var(--color-primary); color: white; }
+        .theme-toggle { background: none; border: none; cursor: pointer; font-size: 1.3rem; }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+        .hamburger span { width: 25px; height: 3px; background-color: var(--color-text-light); border-radius: 2px; }
+        body.dark-mode .hamburger span { background-color: var(--color-text-dark); }
+
+        .main-content { max-width: 1200px; margin: 0 auto; padding: var(--spacing-xl) var(--spacing-lg); margin-top: 80px; }
+
+        .gate-container { max-width: 700px; margin: 100px auto; text-align: center; }
+        .gate-container h1 { font-size: 2.5rem; margin-bottom: var(--spacing-md); }
+        .gate-container p { color: var(--color-text-light-secondary); margin-bottom: var(--spacing-lg); }
+        body.dark-mode .gate-container p { color: var(--color-text-dark-secondary); }
+
+        .code-input-section { background-color: var(--color-bg-light); padding: var(--spacing-xl); border-radius: 12px; border: 2px solid var(--color-border-light); margin-top: var(--spacing-xl); }
+        body.dark-mode .code-input-section { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
+        .code-input { width: 100%; padding: 0.8rem; font-size: 1rem; border: 2px solid var(--color-border-light); border-radius: 8px; margin-bottom: var(--spacing-md); font-family: 'Courier New', monospace; text-transform: uppercase; }
+        body.dark-mode .code-input { background-color: var(--color-bg-dark); color: var(--color-text-dark); border-color: var(--color-border-dark); }
+        .code-error { background-color: rgba(231, 76, 60, 0.1); color: var(--color-danger); padding: var(--spacing-md); border-radius: 8px; margin-bottom: var(--spacing-md); display: none; }
+        .code-error.show { display: block; }
+        .code-submit { width: 100%; padding: 0.8rem; background-color: var(--color-primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .code-submit:hover { background-color: var(--color-primary-dark); }
+
+        .briefing-container { display: none; }
+        .briefing-container.active { display: block; }
+
+        .briefing-header { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); color: white; padding: var(--spacing-xl); border-radius: 12px; margin-bottom: var(--spacing-xl); text-align: center; }
+        .briefing-date { font-size: 0.9rem; opacity: 0.9; }
+        .briefing-title { font-size: 2rem; font-weight: 800; margin: var(--spacing-md) 0; }
+
+        .briefing-section { background-color: var(--color-bg-light); border: 1px solid var(--color-border-light); border-radius: 12px; padding: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
+        body.dark-mode .briefing-section { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
+
+        .section-title { font-family: var(--font-family-display); font-size: 1.3rem; font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-sm); }
+        .section-icon { font-size: 1.5rem; }
+
+        .section-content { color: var(--color-text-light-secondary); line-height: 1.8; }
+        body.dark-mode .section-content { color: var(--color-text-dark-secondary); }
+
+        .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md); margin-top: var(--spacing-md); }
+        .price-card { background-color: var(--color-bg-light-secondary); padding: var(--spacing-md); border-radius: 8px; border-left: 3px solid var(--color-primary); }
+        body.dark-mode .price-card { background-color: var(--color-bg-dark); }
+
+        .price-symbol { font-weight: 700; color: var(--color-primary); }
+        .price-value { font-size: 1.3rem; margin: var(--spacing-sm) 0; }
+        .price-change { font-size: 0.9rem; }
+        .price-change.positive { color: var(--color-success); }
+        .price-change.negative { color: var(--color-danger); }
+
+        .portfolio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-top: var(--spacing-md); }
+        .portfolio-item { background-color: var(--color-bg-light-secondary); padding: var(--spacing-md); border-radius: 8px; }
+        body.dark-mode .portfolio-item { background-color: var(--color-bg-dark); }
+
+        .portfolio-name { font-weight: 600; margin-bottom: var(--spacing-sm); }
+        .portfolio-bar { width: 100%; height: 8px; background-color: var(--color-border-light); border-radius: 4px; overflow: hidden; }
+        body.dark-mode .portfolio-bar { background-color: var(--color-border-dark); }
+        .portfolio-fill { height: 100%; background-color: var(--color-primary); }
+        .portfolio-percentage { font-size: 0.85rem; margin-top: var(--spacing-sm); color: var(--color-text-light-secondary); }
+
+        .alert-box { padding: var(--spacing-lg); border-radius: 8px; margin-bottom: var(--spacing-md); border-left: 4px solid; }
+        .alert-box.warning { background-color: rgba(243, 156, 18, 0.1); border-left-color: var(--color-warning); color: var(--color-warning); }
+        .alert-box.danger { background-color: rgba(231, 76, 60, 0.1); border-left-color: var(--color-danger); color: var(--color-danger); }
+        .alert-box.success { background-color: rgba(46, 204, 113, 0.1); border-left-color: var(--color-success); color: var(--color-success); }
+
+        .action-plan { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; margin-top: var(--spacing-md); }
+        body.dark-mode .action-plan { background-color: var(--color-bg-dark); }
+        .action-plan h4 { color: var(--color-primary); margin-bottom: var(--spacing-md); }
+        .action-plan ul { list-style: none; padding-left: var(--spacing-md); }
+        .action-plan li { margin-bottom: var(--spacing-sm); padding-left: 1.5rem; position: relative; }
+        .action-plan li::before { content: '→'; position: absolute; left: 0; color: var(--color-primary); font-weight: 700; }
+
+        .chart-container { position: relative; height: 300px; margin-top: var(--spacing-lg); }
+
+        .footer-disclaimer { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; margin-top: var(--spacing-xl); border-left: 3px solid var(--color-warning); }
+        body.dark-mode .footer-disclaimer { background-color: var(--color-bg-dark); }
+
+        @media (max-width: 768px) {
+            .navbar-links { display: none; }
+            .hamburger { display: flex; }
+            .price-grid { grid-template-columns: 1fr; }
+            .portfolio-grid { grid-template-columns: 1fr; }
+            .main-content { padding: var(--spacing-lg) var(--spacing-md); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="navbar-logo">GENESIS</a>
+        <nav class="navbar-links">
+            <a href="index.html">Voltar</a>
+            <a href="genesis-vault.html">Vault</a>
+        </nav>
+        <div class="navbar-controls">
+            <div class="language-toggle">
+                <button class="lang-btn active" data-lang="pt">PT</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <button class="theme-toggle">🌙</button>
+        </div>
+        <div class="hamburger"><span></span><span></span><span></span></div>
+    </header>
+
+    <div class="main-content">
+        <div id="gate" class="gate-container">
+            <h1>Genesis Signal</h1>
+            <p>Briefing diário de 15 minutos: análise macro, contexto PT, 20 ativos, on-chain, alertas e plano de ação.</p>
+            <div class="code-input-section">
+                <label style="font-weight: 600; margin-bottom: var(--spacing-sm); display: block;">Introduz o teu código de acesso</label>
+                <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-md);">Formato: GS-XXXX-PT (maiúsculas)</div>
+                <input type="text" class="code-input" id="signal-code" placeholder="GS-XXXX-PT" maxlength="20">
+                <div class="code-error" id="code-error"></div>
+                <button class="code-submit">Validar Código</button>
+            </div>
+            <div style="margin-top: var(--spacing-xl); color: var(--color-text-light-secondary); font-size: 0.9rem;">
+                <p>Não tens código? Subscreve agora:</p>
+                <p><a href="https://wa.me/351000000000" target="_blank" style="color: var(--color-primary); text-decoration: none;">WhatsApp (€15/mês)</a></p>
+            </div>
+        </div>
+
+        <div id="briefing-content" class="briefing-container">
+            <div class="briefing-header">
+                <div class="briefing-date" id="briefing-date">06 de Abril de 2026</div>
+                <div class="briefing-title">Genesis Signal — Briefing Diário</div>
+            </div>
+
+            <!-- SEÇÃO 1: CONTEXTO MACRO -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">🌍</span>
+                    <span>Contexto Macro Global</span>
+                </div>
+                <div class="section-content">
+                    <p><strong>Taxa de Juro (FED):</strong> Mantida em 5.25-5.50%. Inflação em 3.2% (YoY). Expectativa: Possível corte em Junho se tendência continuar.</p>
+                    <p><strong>Mercado Tradicional:</strong> S&P 500 em alta. Índice de sentimento (+2.3%). Fluxos para ativos de risco aumentaram.</p>
+                    <p><strong>Portugal:</strong> Economia estável. Turismo forte. Confiança de consumidor em 52 pontos (ligeira melhoria).</p>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 2: PREÇOS EM TEMPO REAL -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">📊</span>
+                    <span>20 Ativos Principais</span>
+                </div>
+                <div class="section-content">
+                    <div class="price-grid" id="price-grid">
+                        <!-- Preenchido por JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 3: ANÁLISE TÉCNICA -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">📈</span>
+                    <span>Análise Técnica</span>
+                </div>
+                <div class="section-content">
+                    <p><strong>Bitcoin (BTC):</strong> Cotação: €42.500. Acima da MM200 (€41.200). Suporte em €40.800. Resistência em €43.500. Sinal: BULLISH.</p>
+                    <p><strong>Ethereum (ETH):</strong> Cotação: €2.200. Consolidando acima de €2.150. RSI em 55 (neutro). Sinal: AGUARDANDO CONFIRMAÇÃO.</p>
+                    <p><strong>Altcoins:</strong> Solana (+5.4%), Polkadot (+2.1%), Cardano (-0.8%). Índice MVRV de ETH em 1.45 (zona de lucro).</p>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 4: PORTEFÓLIO DE REFERÊNCIA -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">💼</span>
+                    <span>Portefólio de Referência (Genesis Balanced)</span>
+                </div>
+                <div class="section-content">
+                    <p style="margin-bottom: var(--spacing-lg);"><strong>Alocação Sugerida para €1000:</strong></p>
+                    <div class="portfolio-grid">
+                        <div class="portfolio-item">
+                            <div class="portfolio-name">Cofre (60%) — €600</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-sm);">BTC 40% | ETH 20%</div>
+                            <div class="portfolio-bar">
+                                <div class="portfolio-fill" style="width: 100%;"></div>
+                            </div>
+                            <div class="portfolio-percentage">Segurança & Estabilidade</div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-name">Motor (30%) — €300</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-sm);">Altcoins com tese</div>
+                            <div class="portfolio-bar">
+                                <div class="portfolio-fill" style="width: 100%; background-color: var(--color-primary-light);"></div>
+                            </div>
+                            <div class="portfolio-percentage">Crescimento & Oportunidade</div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-name">Exploração (10%) — €100</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-sm);">Airdrops & Especulação</div>
+                            <div class="portfolio-bar">
+                                <div class="portfolio-fill" style="width: 100%; background-color: var(--color-warning);"></div>
+                            </div>
+                            <div class="portfolio-percentage">Risco Controlado</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 5: ON-CHAIN ANALYTICS -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">⛓️</span>
+                    <span>On-Chain Analytics</span>
+                </div>
+                <div class="section-content">
+                    <p><strong>Fluxos de Exchanges:</strong> Saídas de BTC de €120M. Sinal BULLISH (acumulação).</p>
+                    <p><strong>Detentores de Longo Prazo:</strong> Aumentaram 2.3% esta semana. Confiança elevada.</p>
+                    <p><strong>SOPR Ratio:</strong> 1.08 (zona de euforia). Atenção: Possível consolidação próxima.</p>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 6: ALERTAS -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">🚨</span>
+                    <span>Alertas Estruturados</span>
+                </div>
+                <div class="section-content">
+                    <div class="alert-box success">
+                        <strong>✓ OPORTUNIDADE:</strong> BTC em consolidação acima de MM200. Se romper €43.500, alvo próximo €45.000.
+                    </div>
+                    <div class="alert-box warning">
+                        <strong>⚠ ATENÇÃO:</strong> SOPR em zona elevada. Possível pullback curto prazo. Aguarda confirmação.
+                    </div>
+                    <div class="alert-box warning">
+                        <strong>⚠ NOTÍCIA:</strong> Regulação SEC sobre ETFs de crypto em discussão. Aguarda resultado.
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 7: PLANO DE AÇÃO DIÁRIO -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">📋</span>
+                    <span>Plano de Ação — Por Perfil</span>
+                </div>
+                <div class="section-content">
+                    <div class="action-plan">
+                        <h4>Conservador (Cofre 70%)</h4>
+                        <ul>
+                            <li>DCA: €100/mês em BTC (sem mudanças)</li>
+                            <li>Hold ETH. Não vender em consolidação.</li>
+                            <li>Ignorar volatilidade de curto prazo.</li>
+                        </ul>
+                    </div>
+                    <div class="action-plan">
+                        <h4>Balanceado (Cofre 60%, Motor 30%)</h4>
+                        <ul>
+                            <li>DCA: €60 BTC + €30 Altcoins</li>
+                            <li>Considerar pequeño reforço em Solana (tese forte).</li>
+                            <li>Manter disciplina de rebalanceamento.</li>
+                        </ul>
+                    </div>
+                    <div class="action-plan">
+                        <h4>Agressivo (Motor 50%+)</h4>
+                        <ul>
+                            <li>Monitorar breakout €43.500 em BTC para entrada.</li>
+                            <li>Altcoins: Aproveitar volatilidade em Solana/Polkadot.</li>
+                            <li>Risco máximo: 10% do capital em single posição.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 8: LIÇÃO EDITORIAL -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">📚</span>
+                    <span>Lição Editorial do Dia</span>
+                </div>
+                <div class="section-content">
+                    <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-md);">O Viés da Recência — Por Que Recentes Ganhos Enganam</h4>
+                    <p>Bitcoin subiu €3.200 em 10 dias. A euforia é óbvia nas redes sociais. "Bull market confirmado!" — Dizem. Influenciadores fazem vídeos. Novos utilizadores entram.</p>
+                    <p>Isto é "viés da recência" — Tu extrapolares eventos recentes para o futuro próximo. Uma subida de 10 dias não significa que continuará a subir. Historicamente, após surtos assim, 40-50% das vezes há um pullback.</p>
+                    <p><strong>O Que Fazer?</strong> Ignora o ruído. Mantém o plano. DCA. Rebalanceamento automático. Se comprou a €40.000, continua a comprar a €42.500. Quando a maioria está eufórica, é quando deves ser mais prudente.</p>
+                    <p><strong>Lição:</strong> Disciplina bate emoção. Sempre.</p>
+                </div>
+            </div>
+
+            <!-- DISCLAIMER -->
+            <div class="footer-disclaimer">
+                <strong>Aviso Legal & Disclaimer:</strong>
+                <p>Este briefing é conteúdo educativo. Não é aconselhamento financeiro. Não somos responsáveis por perdas. Criptoativos são altamente voláteis. Investe apenas o que podes perder. Consulta um profissional autorizado para decisões pessoais.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SIGNAL_CODES = ['GS-SIGNAL-2026'];
+        let currentLanguage = localStorage.getItem('genesis-language') || 'pt';
+        let isAuthenticated = !!sessionStorage.getItem('signal-auth');
+
+        const ASSETS = [
+            { symbol: 'BTC', name: 'Bitcoin', price: 42500, change: 3.2, cap: '840B' },
+            { symbol: 'ETH', name: 'Ethereum', price: 2200, change: 1.8, cap: '264B' },
+            { symbol: 'SOL', name: 'Solana', price: 145, change: 5.4, cap: '62B' },
+            { symbol: 'ADA', name: 'Cardano', price: 1.05, change: -1.2, cap: '39B' },
+            { symbol: 'XRP', name: 'Ripple', price: 0.95, change: 6.1, cap: '51B' },
+            { symbol: 'DOGE', name: 'Dogecoin', price: 0.25, change: 4.3, cap: '35B' },
+            { symbol: 'LINK', name: 'Chainlink', price: 18.5, change: 2.7, cap: '8.9B' },
+            { symbol: 'ONDO', name: 'Ondo Finance', price: 8.3, change: 4.7, cap: '2.5B' },
+            { symbol: 'ZRO', name: 'LayerZero', price: 12.5, change: -2.1, cap: '3.8B' },
+            { symbol: 'AVAX', name: 'Avalanche', price: 52, change: 3.6, cap: '18B' },
+            { symbol: 'MATIC', name: 'Polygon', price: 0.95, change: 2.2, cap: '9.2B' },
+            { symbol: 'ARB', name: 'Arbitrum', price: 1.8, change: 5.9, cap: '6.5B' },
+            { symbol: 'OP', name: 'Optimism', price: 3.2, change: 4.1, cap: '2.8B' },
+            { symbol: 'FTM', name: 'Fantom', price: 1.05, change: 1.8, cap: '3.2B' },
+            { symbol: 'ATOM', name: 'Cosmos', price: 14.2, change: 2.9, cap: '5.1B' },
+            { symbol: 'JUP', name: 'Jupiter', price: 3.5, change: 7.2, cap: '3.5B' },
+            { symbol: 'BLUR', name: 'Blur', price: 0.45, change: -3.4, cap: '0.6B' },
+            { symbol: 'NEAR', name: 'Near Protocol', price: 8.9, change: 3.3, cap: '9.2B' },
+            { symbol: 'SUI', name: 'Sui', price: 4.2, change: 6.8, cap: '2.1B' },
+            { symbol: 'APT', name: 'Aptos', price: 11.5, change: 2.5, cap: '4.8B' }
+        ];
+
+        function renderPriceGrid() {
+            const html = ASSETS.map(asset => `
+                <div class="price-card">
+                    <div class="price-symbol">${asset.symbol}</div>
+                    <div class="price-value">€${asset.price.toFixed(2)}</div>
+                    <div class="price-change ${asset.change >= 0 ? 'positive' : 'negative'}">
+                        ${asset.change >= 0 ? '↑' : '↓'} ${Math.abs(asset.change).toFixed(1)}%
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('price-grid').innerHTML = html;
+        }
+
+        // Validar código
+        document.querySelector('.code-submit').addEventListener('click', function() {
+            const code = document.getElementById('signal-code').value.toUpperCase();
+            const errorDiv = document.getElementById('code-error');
+
+            if (SIGNAL_CODES.includes(code)) {
+                sessionStorage.setItem('signal-auth', 'true');
+                isAuthenticated = true;
+                document.getElementById('gate').style.display = 'none';
+                document.getElementById('briefing-content').classList.add('active');
+                renderPriceGrid();
+                updateBriefingDate();
+                errorDiv.classList.remove('show');
+            } else {
+                errorDiv.textContent = 'Código inválido. Tenta novamente.';
+                errorDiv.classList.add('show');
+            }
+        });
+
+        function updateBriefingDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date().toLocaleDateString('pt-PT', options);
+            document.getElementById('briefing-date').textContent = today.charAt(0).toUpperCase() + today.slice(1);
+        }
+
+        // Tema
+        document.querySelector('.theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('genesis-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
+
+        // Idioma
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                currentLanguage = this.dataset.lang;
+                localStorage.setItem('genesis-language', currentLanguage);
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Carregar tema salvo
+        if (localStorage.getItem('genesis-theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+
+        // Verificar autenticação ao carregar
+        if (isAuthenticated) {
+            document.getElementById('gate').style.display = 'none';
+            document.getElementById('briefing-content').classList.add('active');
+            renderPriceGrid();
+            updateBriefingDate();
+        }
+    </script>
+</body>
+</html>
