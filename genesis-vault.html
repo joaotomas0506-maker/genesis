@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Genesis Vault — Curso de Criptoativos</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --color-primary: #1565C0;
+            --color-primary-dark: #0D47A1;
+            --color-primary-light: #1E88E5;
+            --color-success: #2ECC71;
+            --color-warning: #F39C12;
+            --color-danger: #E74C3C;
+            --color-bg-light: #FFFFFF;
+            --color-bg-light-secondary: #F8F9FA;
+            --color-bg-dark: #0F0F0F;
+            --color-bg-dark-secondary: #1A1A1A;
+            --color-text-light: #1A1A1A;
+            --color-text-light-secondary: #555555;
+            --color-text-dark: #E8E8E8;
+            --color-text-dark-secondary: #B0B0B0;
+            --color-border-light: #E0E0E0;
+            --color-border-dark: #333333;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-xxl: 4rem;
+            --font-family-body: 'Inter', sans-serif;
+            --font-family-display: 'Poppins', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-family-body); background-color: var(--color-bg-light); color: var(--color-text-light); line-height: 1.6; }
+        body.dark-mode { background-color: var(--color-bg-dark); color: var(--color-text-dark); }
+
+        header { position: fixed; top: 0; width: 100%; height: 80px; background-color: var(--color-bg-light); border-bottom: 1px solid var(--color-border-light); display: flex; justify-content: space-between; align-items: center; padding: 0 var(--spacing-lg); z-index: 1000; }
+        body.dark-mode header { background-color: var(--color-bg-dark-secondary); border-bottom-color: var(--color-border-dark); }
+        .navbar-logo { font-family: var(--font-family-display); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); text-decoration: none; }
+        .navbar-links { display: flex; gap: var(--spacing-xl); list-style: none; }
+        .navbar-links a { text-decoration: none; color: var(--color-text-light); font-weight: 500; }
+        body.dark-mode .navbar-links a { color: var(--color-text-dark); }
+        .navbar-links a:hover { color: var(--color-primary); }
+        .navbar-controls { display: flex; gap: var(--spacing-md); align-items: center; }
+        .language-toggle { display: flex; gap: 0.5rem; background-color: var(--color-bg-light-secondary); padding: 0.4rem; border-radius: 8px; border: none; }
+        body.dark-mode .language-toggle { background-color: var(--color-bg-dark); }
+        .language-toggle button { background: none; border: none; padding: 0.4rem 0.8rem; cursor: pointer; border-radius: 6px; font-weight: 600; font-size: 0.85rem; color: var(--color-text-light-secondary); }
+        body.dark-mode .language-toggle button { color: var(--color-text-dark-secondary); }
+        .language-toggle button.active { background-color: var(--color-primary); color: white; }
+        .theme-toggle { background: none; border: none; cursor: pointer; font-size: 1.3rem; }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+        .hamburger span { width: 25px; height: 3px; background-color: var(--color-text-light); border-radius: 2px; }
+        body.dark-mode .hamburger span { background-color: var(--color-text-dark); }
+
+        .container { display: grid; grid-template-columns: 280px 1fr; margin-top: 80px; min-height: calc(100vh - 80px); }
+        .sidebar { background-color: var(--color-bg-light-secondary); border-right: 1px solid var(--color-border-light); padding: var(--spacing-lg); overflow-y: auto; position: sticky; top: 80px; height: calc(100vh - 80px); }
+        body.dark-mode .sidebar { background-color: var(--color-bg-dark-secondary); border-right-color: var(--color-border-dark); }
+        .sidebar h3 { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--color-primary); margin: var(--spacing-lg) 0 var(--spacing-md); }
+        .sidebar-item { padding: var(--spacing-sm); margin-bottom: 0.5rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; color: var(--color-text-light-secondary); text-decoration: none; display: block; font-size: 0.9rem; }
+        body.dark-mode .sidebar-item { color: var(--color-text-dark-secondary); }
+        .sidebar-item:hover { background-color: var(--color-bg-light); color: var(--color-primary); }
+        body.dark-mode .sidebar-item:hover { background-color: var(--color-bg-dark); }
+        .sidebar-item.active { background-color: var(--color-primary); color: white; }
+        .sidebar-item.completed::after { content: ' ✓'; color: var(--color-success); font-weight: 700; }
+
+        .progress-section { background-color: var(--color-bg-light); padding: var(--spacing-md); border-radius: 8px; margin-top: var(--spacing-lg); }
+        body.dark-mode .progress-section { background-color: var(--color-bg-dark); }
+        .progress-bar-vault { width: 100%; height: 8px; background-color: var(--color-border-light); border-radius: 4px; overflow: hidden; }
+        body.dark-mode .progress-bar-vault { background-color: var(--color-border-dark); }
+        .progress-fill { height: 100%; background: linear-gradient(to right, var(--color-primary), var(--color-primary-light)); transition: width 0.3s ease; }
+
+        .main-content { padding: var(--spacing-xl); overflow-y: auto; }
+        .gate-container { max-width: 700px; margin: 100px auto; text-align: center; }
+        .gate-container h1 { font-size: 2.5rem; margin-bottom: var(--spacing-md); }
+        .gate-container p { color: var(--color-text-light-secondary); margin-bottom: var(--spacing-lg); }
+        body.dark-mode .gate-container p { color: var(--color-text-dark-secondary); }
+
+        .code-input-section { background-color: var(--color-bg-light); padding: var(--spacing-xl); border-radius: 12px; border: 2px solid var(--color-border-light); margin-top: var(--spacing-xl); }
+        body.dark-mode .code-input-section { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
+        .code-input { width: 100%; padding: 0.8rem; font-size: 1rem; border: 2px solid var(--color-border-light); border-radius: 8px; margin-bottom: var(--spacing-md); font-family: 'Courier New', monospace; text-transform: uppercase; }
+        body.dark-mode .code-input { background-color: var(--color-bg-dark); color: var(--color-text-dark); border-color: var(--color-border-dark); }
+        .code-error { background-color: rgba(231, 76, 60, 0.1); color: var(--color-danger); padding: var(--spacing-md); border-radius: 8px; margin-bottom: var(--spacing-md); display: none; }
+        .code-error.show { display: block; }
+        .code-submit { width: 100%; padding: 0.8rem; background-color: var(--color-primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .code-submit:hover { background-color: var(--color-primary-dark); }
+
+        .chapter { display: none; }
+        .chapter.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .chapter-header { margin-bottom: var(--spacing-xl); border-bottom: 2px solid var(--color-border-light); padding-bottom: var(--spacing-lg); }
+        body.dark-mode .chapter-header { border-bottom-color: var(--color-border-dark); }
+        .chapter-number { color: var(--color-primary); font-weight: 700; }
+        .chapter-title { font-size: 2rem; font-weight: 800; margin: var(--spacing-md) 0; }
+        .chapter-subtitle { color: var(--color-text-light-secondary); font-size: 1.1rem; }
+        body.dark-mode .chapter-subtitle { color: var(--color-text-dark-secondary); }
+
+        .chapter-content { max-width: 850px; }
+        .chapter-content h3 { font-size: 1.5rem; margin: var(--spacing-xl) 0 var(--spacing-md); }
+        .chapter-content h4 { font-size: 1.1rem; margin: var(--spacing-lg) 0 var(--spacing-sm); color: var(--color-primary); }
+        .chapter-content p { margin-bottom: var(--spacing-md); color: var(--color-text-light-secondary); line-height: 1.8; }
+        body.dark-mode .chapter-content p { color: var(--color-text-dark-secondary); }
+        .chapter-content ul { margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md); }
+        .chapter-content li { margin-bottom: var(--spacing-sm); line-height: 1.8; }
+
+        .callout { background-color: var(--color-bg-light-secondary); border-left: 4px solid var(--color-primary); padding: var(--spacing-lg); margin: var(--spacing-lg) 0; border-radius: 4px; }
+        body.dark-mode .callout { background-color: var(--color-bg-dark); }
+        .callout-title { font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-sm); }
+        .callout.warning { border-left-color: var(--color-warning); }
+        .callout.warning .callout-title { color: var(--color-warning); }
+        .callout.danger { border-left-color: var(--color-danger); }
+        .callout.danger .callout-title { color: var(--color-danger); }
+
+        .example-box { background-color: var(--color-bg-light); padding: var(--spacing-lg); border: 1px solid var(--color-border-light); border-radius: 8px; margin: var(--spacing-lg) 0; font-family: 'Courier New', monospace; font-size: 0.9rem; overflow-x: auto; }
+        body.dark-mode .example-box { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
+
+        .quiz-section { background-color: var(--color-bg-light-secondary); padding: var(--spacing-xl); border-radius: 12px; margin: var(--spacing-xl) 0; }
+        body.dark-mode .quiz-section { background-color: var(--color-bg-dark); }
+        .quiz-section h3 { color: var(--color-primary); margin-bottom: var(--spacing-lg); }
+        .quiz-question { margin-bottom: var(--spacing-lg); }
+        .quiz-question-text { font-weight: 600; margin-bottom: var(--spacing-md); }
+        .quiz-options { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+        .quiz-option { padding: var(--spacing-md); background-color: var(--color-bg-light); border: 2px solid var(--color-border-light); border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
+        body.dark-mode .quiz-option { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
+        .quiz-option:hover { border-color: var(--color-primary); }
+        .quiz-option.correct { background-color: rgba(46, 204, 113, 0.1); border-color: var(--color-success); }
+        .quiz-option.incorrect { background-color: rgba(231, 76, 60, 0.1); border-color: var(--color-danger); }
+        .quiz-feedback { margin-top: var(--spacing-md); padding: var(--spacing-md); border-radius: 8px; display: none; }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background-color: rgba(46, 204, 113, 0.1); color: var(--color-success); }
+        .quiz-feedback.incorrect { background-color: rgba(231, 76, 60, 0.1); color: var(--color-danger); }
+
+        .simulator-section { background-color: var(--color-bg-light-secondary); padding: var(--spacing-xl); border-radius: 12px; margin: var(--spacing-xl) 0; }
+        body.dark-mode .simulator-section { background-color: var(--color-bg-dark); }
+        .simulator-section h3 { color: var(--color-primary); margin-bottom: var(--spacing-lg); }
+        .simulator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); }
+        .simulator-inputs { display: flex; flex-direction: column; gap: var(--spacing-md); }
+        .input-group { display: flex; flex-direction: column; }
+        .input-group label { font-weight: 600; margin-bottom: var(--spacing-sm); }
+        .input-group input, .input-group select { padding: 0.8rem; border: 2px solid var(--color-border-light); border-radius: 8px; font-size: 1rem; }
+        body.dark-mode .input-group input, body.dark-mode .input-group select { background-color: var(--color-bg-dark-secondary); color: var(--color-text-dark); border-color: var(--color-border-dark); }
+        .simulate-button { background-color: var(--color-primary); color: white; padding: 0.8rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .simulate-button:hover { background-color: var(--color-primary-dark); }
+        .simulator-results { background-color: var(--color-bg-light); padding: var(--spacing-lg); border-radius: 8px; border-left: 4px solid var(--color-success); }
+        body.dark-mode .simulator-results { background-color: var(--color-bg-dark-secondary); }
+        .result-row { display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--color-border-light); }
+        body.dark-mode .result-row { border-bottom-color: var(--color-border-dark); }
+        .result-label { font-weight: 600; }
+        .result-value { color: var(--color-primary); font-weight: 700; }
+        .chart-container { position: relative; height: 300px; margin-top: var(--spacing-lg); }
+
+        .chapter-actions { display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl); border-top: 1px solid var(--color-border-light); padding-top: var(--spacing-lg); }
+        body.dark-mode .chapter-actions { border-top-color: var(--color-border-dark); }
+        .mark-read-button { background-color: var(--color-success); color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .mark-read-button:hover { background-color: rgba(46, 204, 113, 0.8); }
+        .mark-read-button.marked { opacity: 0.6; }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { position: fixed; left: 0; top: 80px; width: 100%; height: auto; max-height: 300px; border-right: none; border-bottom: 1px solid var(--color-border-light); display: none; }
+            .sidebar.mobile-open { display: block; }
+            .main-content { padding: var(--spacing-lg); }
+            .simulator-grid { grid-template-columns: 1fr; }
+            .hamburger { display: flex; }
+            .navbar-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="navbar-logo">GENESIS</a>
+        <nav class="navbar-links">
+            <a href="index.html">Voltar</a>
+            <a href="genesis-signal.html">Signal</a>
+        </nav>
+        <div class="navbar-controls">
+            <div class="language-toggle">
+                <button class="lang-btn active" data-lang="pt">PT</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <button class="theme-toggle">🌙</button>
+        </div>
+        <div class="hamburger"><span></span><span></span><span></span></div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Base Linear</h3>
+            <div id="sidebar-base"></div>
+            <h3>Módulos Avançados</h3>
+            <div id="sidebar-advanced"></div>
+            <div class="progress-section">
+                <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: var(--spacing-sm);">Progresso</div>
+                <div class="progress-bar-vault">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div style="font-size: 0.85rem; margin-top: var(--spacing-sm);">
+                    <span id="progress-count">0</span> / <span id="progress-total">13</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div id="gate" class="gate-container">
+                <h1>Genesis Vault</h1>
+                <p>O curso estruturado com 13 capítulos base + 5 módulos avançados. Profundidade rara, quizzes e simuladores.</p>
+                <div class="code-input-section">
+                    <label style="font-weight: 600; margin-bottom: var(--spacing-sm); display: block;">Introduz o teu código de acesso</label>
+                    <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-md);">Formato: GV-XXXX-PT (maiúsculas)</div>
+                    <input type="text" class="code-input" id="vault-code" placeholder="GV-XXXX-PT" maxlength="20">
+                    <div class="code-error" id="code-error"></div>
+                    <button class="code-submit">Validar Código</button>
+                </div>
+                <div style="margin-top: var(--spacing-xl); color: var(--color-text-light-secondary); font-size: 0.9rem;">
+                    <p>Não tens código? Contacta-nos:</p>
+                    <p><a href="mailto:genesis@protonmail.com" style="color: var(--color-primary); text-decoration: none;">genesis@protonmail.com</a></p>
+                </div>
+            </div>
+
+            <div id="course-content" style="display: none;"></div>
+        </main>
+    </div>
+
+    <script>
+        const VAULT_CODES = ['GV-SPRING-2026'];
+        let currentLanguage = localStorage.getItem('genesis-language') || 'pt';
+        let currentChapterIndex = 0;
+        let isAuthenticated = !!sessionStorage.getItem('vault-auth');
+
+        const chapters = [
+            {
+                id: 'cap1', type: 'base', number: 1,
+                title: { pt: 'A Origem: Do Colapso ao Genesis Block', en: 'The Origin: From Collapse to Genesis Block' },
+                subtitle: { pt: 'A história que precedeu Bitcoin', en: 'The history that preceded Bitcoin' },
+                content: { pt: `
+                    <h3>A Crise de 2008 e o Colapso</h3>
+                    <p>Em setembro de 2008, Lehman Brothers colapsou. O sistema financeiro global entrou em pânico. Bancos desabaram. Poupanças evaporaram. Milhões perderam casas e empregos. Ninguém o vira vindo. Os "especialistas" não tinham ideia. Os mecanismos de segurança falharam completamente.</p>
+                    <div class="callout warning">
+                        <div class="callout-title">Por que importa?</div>
+                        <p>Esta crise destruiu a confiança no sistema centralizado. Se as instituições que deveriam proteger o nosso dinheiro são as mesmas que o perdem, para que servem?</p>
+                    </div>
+                    <h3>Satoshi Nakamoto e a Visão Alternativa</h3>
+                    <p>Em 31 de outubro de 2008, Satoshi Nakamoto publicou um documento de nove páginas: "Bitcoin: A Peer-to-Peer Electronic Cash System". O documento propunha algo radical: dinheiro digital que não precisaria de bancos, de intermediários, de ninguém que controlasse o sistema. Apenas código, criptografia e matemática.</p>
+                    <div class="example-box">Abstract: "A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution."</div>
+                    <h3>O Genesis Block — Janeiro de 2009</h3>
+                    <p>A 3 de janeiro de 2009, o software Bitcoin foi ativado. A primeira transação (chamada de "Genesis Block") foi minerada. Nesse bloco, Satoshi incluiu uma mensagem:</p>
+                    <div class="example-box">"The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"</div>
+                    <p>Uma referência direta ao jornal The Times de 3 de janeiro de 2009. Uma mensagem clara: o sistema precisava mudar.</p>
+                    <h3>Os Pilares da Revolução</h3>
+                    <p>Bitcoin foi construído sobre três pilares fundamentais:</p>
+                    <ul>
+                        <li><strong>Descentralização:</strong> Sem um servidor central. Milhares de nós. Cada um com cópia completa da história.</li>
+                        <li><strong>Transparência:</strong> Todas as transações são visíveis. Ninguém pode falsificar registos. Tudo é verificável.</li>
+                        <li><strong>Sem Permissão:</strong> Qualquer pessoa, em qualquer lugar, a qualquer hora, pode participar. Não precisa de aprovação.</li>
+                    </ul>
+                    <div class="callout">
+                        <div class="callout-title">Nota Importante</div>
+                        <p>Bitcoin não foi a primeira tentativa de moeda digital. Houve várias antes. O que a torna diferente é que resolveu o "double-spending problem" — garantir que a mesma moeda digital não é gasta duas vezes — sem precisar de um intermediário.</p>
+                    </div>
+                    <h3>Do Genesis ao Hoje</h3>
+                    <p>Desde 2009, o Bitcoin subiu de centavos para milhares de euros. Passou de um experimento técnico para uma classe de ativos de trilhões de dólares.</p>
+                    <p>Após o seu sucesso, surgiram centenas de criptoativos: Ethereum (com smart contracts), Solana (mais rápido), Polkadot (interoperabilidade), e muitos outros.</p>
+                    <h3>O Teu Genesis</h3>
+                    <p>Aqui estás tu, 15+ anos depois. Estás a explorar um ecossistema que foi nascido da desconfiança no sistema tradicional. Este capítulo é o teu Genesis Block. O teu ponto de partida. De agora em diante, construímos conhecimento sobre fundações sólidas.</p>
+                `, en: `
+                    <h3>The 2008 Crisis</h3>
+                    <p>In September 2008, Lehman Brothers collapsed. The global financial system panicked. Banks crumbled. Savings evaporated. Millions lost homes and jobs.</p>
+                    <p>No one saw it coming. The "experts" had no idea. Safety mechanisms failed completely.</p>
+                    <div class="callout warning">
+                        <div class="callout-title">Why does this matter?</div>
+                        <p>This crisis destroyed confidence in the centralized system. If the institutions that should protect our money are the same ones that lose it, what are they for?</p>
+                    </div>
+                    <h3>Satoshi Nakamoto and the Alternative Vision</h3>
+                    <p>On October 31, 2008, Satoshi Nakamoto published a nine-page document: "Bitcoin: A Peer-to-Peer Electronic Cash System".</p>
+                    <p>The document proposed something radical: digital money that would not need banks, intermediaries, or anyone controlling the system. Just code, cryptography and mathematics.</p>
+                ` }
+            },
+            {
+                id: 'cap2', type: 'base', number: 2,
+                title: { pt: 'Blockchain, Mineração e Consenso', en: 'Blockchain, Mining and Consensus' },
+                subtitle: { pt: 'Como funciona a tecnologia', en: 'How the technology works' },
+                content: { pt: `
+                    <h3>O que é a Blockchain?</h3>
+                    <p>Blockchain é, em essência, uma lista de blocos. Cada bloco contém dados (transações) e uma referência criptográfica (um hash) para o bloco anterior. É como uma corrente de blocos conectados.</p>
+                    <div class="example-box">Bloco 1: [Dados] → Hash ABC123<br>Bloco 2: [Dados] + Hash ABC123 → Hash DEF456<br>Bloco 3: [Dados] + Hash DEF456 → Hash GHI789</div>
+                    <h3>As Quatro Propriedades Essenciais</h3>
+                    <ul>
+                        <li><strong>Imutabilidade:</strong> Se alguém tenta mudar um dado no Bloco 2, o seu hash muda. Mas o Bloco 3 ainda referencia o hash anterior. A mudança é imediatamente detetada. Qualquer alteração passada quebra a corrente inteira.</li>
+                        <li><strong>Descentralização:</strong> Não há um único servidor. Há milhares. Cada um tem uma cópia completa. Para alterar a história, terias de alterar a maioria simultaneamente — praticamente impossível.</li>
+                        <li><strong>Transparência:</strong> Qualquer um pode ver toda a história da blockchain. Todas as transações estão lá. Não há segredos técnicos, apenas criptografia pública.</li>
+                        <li><strong>Sem Permissão:</strong> Qualquer um pode juntar-se à rede e começar a validar transações. Não precisa de pedir permissão a ninguém.</li>
+                    </ul>
+                    <div class="callout">
+                        <div class="callout-title">Analogia do Mundo Real</div>
+                        <p>Imagina um caderno que é partilhado por 10.000 pessoas. Qualquer transação é anotada no caderno e distribuída a todas. Se uma pessoa tenta falsificar uma transação anterior, as outras 9.999 dizem "não, isso não corresponde ao nosso registo". É impossível falsificar.</p>
+                    </div>
+                    <h3>Mineração — Como Novos Blocos são Criados</h3>
+                    <p>A mineração é o processo de validação e adição de novos blocos à blockchain. Quando alguém faz uma transação Bitcoin, ela entra num "mempool" — uma fila de transações à espera de validação. Os mineradores competem para resolver um quebra-cabeça matemático complexo. O primeiro a resolvê-lo ganha o direito de adicionar o novo bloco (com as transações) à blockchain.</p>
+                    <p>Esse minerador recebe uma recompensa: uma quantidade de Bitcoin novo ("block reward") + as taxas das transações que incluiu.</p>
+                    <div class="example-box">Exemplo: 10 transações aguardam validação. 5 mineradores estão a competir. Minerador A resolve o puzzle primeiro. Block reward: 6.25 BTC (em 2024). Taxas: 0.05 BTC. Total ganho: 6.30 BTC.</div>
+                    <h3>Prova de Trabalho (PoW) vs Prova de Participação (PoS)</h3>
+                    <p><strong>Prova de Trabalho (PoW):</strong> Como Bitcoin. Mineradores usam potência computacional massiva para resolver puzzles. É seguro mas consome muita energia.</p>
+                    <p><strong>Prova de Participação (PoS):</strong> Novo modelo. Em vez de computação, os validadores "apostam" moedas próprias. Se forem honestos, ganham recompensa. Se tentarem fraudar, perdem as moedas ("slashing"). Ethereum mudou para PoS em 2022.</p>
+                    <h3>Smart Contracts</h3>
+                    <p>Bitcoin pode apenas registar transações. Ethereum (2015) adicionou "smart contracts" — programas que vivem na blockchain e executam automaticamente quando certas condições são cumpridas.</p>
+                    <p>Exemplo: "Se o preço da BTC subir acima de €50.000, transfere 1 ETH da carteira A para a carteira B".</p>
+                    <p>Os smart contracts são "imutáveis" — uma vez publicados, não podem ser alterados ou cancelados. Executam-se exatamente como foram programados.</p>
+                `, en: `
+                    <h3>What is Blockchain?</h3>
+                    <p>Blockchain is, essentially, a list of blocks. Each block contains data (transactions) and a cryptographic reference (a hash) to the previous block.</p>
+                ` }
+            },
+            {
+                id: 'cap3', type: 'base', number: 3,
+                title: { pt: 'Wallets, Exchanges e Segurança', en: 'Wallets, Exchanges and Security' },
+                subtitle: { pt: 'Como armazenar e proteger ativos', en: 'How to store and protect assets' },
+                content: { pt: `
+                    <h3>O que é uma Wallet?</h3>
+                    <p>Uma wallet é simplesmente um par de chaves criptográficas: uma pública (como um IBAN) e uma privada (como a password do teu banco, mas muito mais crítica).</p>
+                    <p><strong>Chave Pública:</strong> Pode ser partilhada livremente. Qualquer um pode enviar-te moedas usando a tua chave pública.</p>
+                    <p><strong>Chave Privada:</strong> NUNCA a partilhes. Quem tem a chave privada controla os fundos. Se a perdes, perdes o acesso às moedas para sempre.</p>
+                    <div class="callout danger">
+                        <div class="callout-title">Regra Absoluta #1: Guarda a Chave Privada</div>
+                        <p>Se alguém tem a tua chave privada, pode enviar todas as tuas moedas para qualquer lugar e tu não podes fazer nada. Não há "guardarroupa", não há "esqueci a password". Desaparece.</p>
+                    </div>
+                    <h3>Tipos de Wallets</h3>
+                    <p><strong>Custodial (Centralizado):</strong> Uma exchange (como Kraken, Binance) guarda a tua moeda e a chave privada. Tu tens um login/password, mas a exchange controla tecnicamente os fundos. Se a exchange é hackeada ou falha, podes perder tudo.</p>
+                    <p><strong>Non-Custodial (Descentralizado):</strong> Tu guardas a chave privada. Tu és o banco. Exemplos: hardware wallets (Ledger, Trezor), software wallets (MetaMask), paper wallets.</p>
+                    <div class="example-box">Exemplo de Seed Phrase (12 palavras): "abandon ability able about above absent absorb abstract abstain accent accept access". Esta frase gera todas as chaves da tua wallet. NUNCA a parta com ninguém.</div>
+                    <h3>A Seed Phrase — A Tua Chave Mestra</h3>
+                    <p>A maioria das wallets modernas usam uma "seed phrase" — uma sequência de 12 ou 24 palavras que geram todas as chaves privadas. Se conseguires a seed phrase, consegues a wallet inteira.</p>
+                    <p>Se perdes a seed phrase e o teu dispositivo é roubado/destruído, perdeste acesso aos fundos permanentemente.</p>
+                    <h3>Exchanges — Os Portais de Entrada</h3>
+                    <p>Uma exchange é uma plataforma onde podes comprar, vender e trocar moedas. Exemplos: Kraken, Binance, Coinbase. Vantagem: Fácil de usar, interface simples, podes usar cartão de crédito. Desvantagem: A exchange é custodial — eles guardam as chaves.</p>
+                    <h3>A Importância de Retirar da Exchange</h3>
+                    <p>Muitas pessoas deixam moedas nas exchanges indefinidamente. Isto é arriscado. Se queres armazenamento de longo prazo, deverias retirar para a tua própria wallet.</p>
+                    <p><strong>"Not your keys, not your coins"</strong> — Se não tens a chave privada, tecnicamente não é teu.</p>
+                    <h3>Golpes e Ataques Comuns</h3>
+                    <ul>
+                        <li><strong>Phishing:</strong> Site fake que parece real. Colocar a seed phrase lá "recupera" a wallet. Na verdade, está a roubar.</li>
+                        <li><strong>Malware:</strong> Virus que registam teclado ou screenshot quando compias a seed phrase.</li>
+                        <li><strong>Confiança Falsa:</strong> "Influenciador" oferece giveaway. Se enviares €100 primeiro, recebes €1000 em BTC. Obviamente, é scam.</li>
+                    </ul>
+                `, en: `
+                    <h3>What is a Wallet?</h3>
+                    <p>A wallet is simply a pair of cryptographic keys: one public (like an IBAN) and one private (like your bank password, but much more critical).</p>
+                ` }
+            },
+            {
+                id: 'cap4', type: 'base', number: 4,
+                title: { pt: 'Análise Técnica e Fundamentos', en: 'Technical Analysis and Fundamentals' },
+                subtitle: { pt: 'Ler o mercado corretamente', en: 'Reading the market correctly' },
+                content: { pt: `
+                    <h3>Análise Técnica vs Fundamentos</h3>
+                    <p><strong>Técnica:</strong> Olhas para gráficos, padrões, volume. A premissa é que o preço reflete toda a informação, e padrões históricos repetem-se.</p>
+                    <p><strong>Fundamental:</strong> Estudas a tecnologia, adoção, notícias. "É este ativo realmente valioso?"</p>
+                    <p>O ideal é combinar ambas.</p>
+                    <h3>Indicadores Técnicos Essenciais</h3>
+                    <p><strong>RSI (Relative Strength Index):</strong> Mede a força do movimento. Entre 0 e 100. Acima de 70 = "sobrecomprado" (pode cair). Abaixo de 30 = "sobrevendido" (pode subir).</p>
+                    <p><strong>MACD (Moving Average Convergence Divergence):</strong> Mostra momentum. Quando a linha rápida cruza a linha lenta = mudança de direção possível.</p>
+                    <p><strong>Médias Móveis:</strong> Média do preço dos últimos X dias. Suaviza a volatilidade. Se o preço está acima da média móvel de 200 dias = tendência de alta.</p>
+                    <p><strong>Volume:</strong> Quantas moedas foram transacionadas. Volume alto = movimento forte (confirmado). Volume baixo = movimento fraco (falso).</p>
+                    <div class="callout">
+                        <div class="callout-title">Nota Sobre Indicadores</div>
+                        <p>Indicadores são "lagging" — dizem-te o que já aconteceu, não o que vai acontecer. Não são cristais. São ferramentas de contexto.</p>
+                    </div>
+                    <h3>Ciclos de Mercado</h3>
+                    <p>O mercado crypto é cíclico. Segue um padrão:</p>
+                    <ol>
+                        <li><strong>Acumulação:</strong> Preço baixo, interesse baixo. Pessoas conscientes entram silenciosamente.</li>
+                        <li><strong>Markup:</strong> Preço sobe. Mais pessoas percebem e entram.</li>
+                        <li><strong>Distribuição:</strong> Preço alcança picos. Ganancioso. Todos falam sobre crypto. Influenciadores fazem "calls". Pessoas entram no topo.</li>
+                        <li><strong>Markdown:</strong> Preço cai brutalmente. Pânico. Pessoas vendem tudo. Saem frustradas.</li>
+                        <li>Volta ao passo 1.</li>
+                    </ol>
+                    <p>Bitcoin tem "halving" a cada 4 anos. Isto tende a criar ciclos de ~4 anos também.</p>
+                    <h3>Eventos Macro Que Afetam Crypto</h3>
+                    <p><strong>Taxas de Juro:</strong> Se o Banco Central aumenta taxas, menos pessoas especulam em crypto. Se baixa, mais especulação.</p>
+                    <p><strong>Inflação:</strong> Alta inflação torna crypto apelativo (ouro digital). Mas também torna tudo volátil.</p>
+                    <p><strong>Notícias Regulatórias:</strong> Se um país bane crypto, preço cai. Se outro o aceita, sobe.</p>
+                    <p><strong>Adoção Institucional:</strong> Quando grandes fundos entram, mercado sobe.</p>
+                `, en: `
+                    <h3>Technical Analysis vs Fundamentals</h3>
+                    <p><strong>Technical:</strong> You look at charts, patterns, volume.</p>
+                ` }
+            },
+            {
+                id: 'cap5', type: 'base', number: 5,
+                title: { pt: 'Estratégia: Cofre, Motor e DCA', en: 'Strategy: Vault, Engine and DCA' },
+                subtitle: { pt: 'Como estruturar a alocação', en: 'How to structure allocation' },
+                content: { pt: `
+                    <h3>Framework de Três Camadas</h3>
+                    <p>Em vez de tudo-ou-nada, divide o teu capital em três "blocos mentais":</p>
+                    <p><strong>1. Cofre (60-70%):</strong> Bitcoin e Ethereum. Long-term. Não toca. Compra e deixa. É o alicerce.</p>
+                    <p><strong>2. Motor (20-30%):</strong> Altcoins com tese sólida (Solana, Polkadot). Mais risco. Rebalanceia anualmente.</p>
+                    <p><strong>3. Exploração (5-10%):</strong> Experimentos. Airdrops. Especulação pura. Dinheiro que podes perder 100%.</p>
+                    <div class="example-box">Exemplo: €1000 investidos<br>Cofre: €650<br>Motor: €280<br>Exploração: €70</div>
+                    <h3>DCA - Dollar Cost Averaging</h3>
+                    <p>Em vez de investir tudo de uma vez (timing do mercado é impossível), investe quantias iguais regularmente.</p>
+                    <p>Exemplo: €100/mês em BTC, todos os meses, durante 5 anos.</p>
+                    <div class="callout">
+                        <div class="callout-title">Vantagem</div>
+                        <p>Removes emoção. Compras mais quando preço está baixo, menos quando está alto. Suaviza volatilidade.</p>
+                    </div>
+                    <h3>Rebalanceamento</h3>
+                    <p>Anualmente, volta aos percentuais originais. Se Motor cresceu muito (ganhos), vende um pouco e reforça Cofre. Isto obriga-te a "vender alto" — um dos maiores desafios psicológicos.</p>
+                    <h3>Disciplina Como Ativo</h3>
+                    <p>Um plano simples executado 100% bate um plano perfeito executado 50%. Define as regras e sigue. Sem exceções. Sem emoção.</p>
+                `, en: `
+                    <h3>Three-Layer Framework</h3>
+                    <p>Instead of all-or-nothing, divide your capital into three "mental blocks":</p>
+                ` }
+            },
+            {
+                id: 'cap6', type: 'base', number: 6,
+                title: { pt: 'Simulador DCA Prático', en: 'Practical DCA Simulator' },
+                subtitle: { pt: 'Vê o impacto do teu plano', en: 'See the impact of your plan' },
+                content: { pt: `
+                    <h3>O Poder da Simulação</h3>
+                    <p>A seguir tens um simulador interativo de DCA (Dollar Cost Averaging). Preenche os valores e vê o gráfico da evolução do teu investimento ao longo do tempo.</p>
+                    <p>Isto ajuda-te a ver por que é que começar cedo, mesmo com quantias pequenas, é powerful.</p>
+                    
+                    <div class="simulator-section">
+                        <h3>Simulador DCA</h3>
+                        <div class="simulator-grid">
+                            <div class="simulator-inputs">
+                                <div class="input-group">
+                                    <label>Investimento Mensal (€)</label>
+                                    <input type="number" id="dca-monthly" value="100" min="10">
+                                </div>
+                                <div class="input-group">
+                                    <label>Número de Anos</label>
+                                    <input type="number" id="dca-years" value="5" min="1" max="30">
+                                </div>
+                                <div class="input-group">
+                                    <label>Taxa Anual Esperada (%)</label>
+                                    <input type="number" id="dca-rate" value="15" min="-50" max="100" step="0.1">
+                                </div>
+                                <button class="simulate-button" onclick="runDCASimulator()">Simular</button>
+                            </div>
+                            <div class="simulator-results" id="dca-results" style="display: none;">
+                                <h4>Resultados</h4>
+                                <div class="result-row">
+                                    <span class="result-label">Total Investido:</span>
+                                    <span class="result-value" id="dca-invested">€0</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Valor Estimado:</span>
+                                    <span class="result-value" id="dca-value">€0</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Ganho/Perda:</span>
+                                    <span class="result-value" id="dca-profit">€0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="dca-chart"></canvas>
+                        </div>
+                        <div class="callout" style="margin-top: var(--spacing-lg);">
+                            <p style="font-size: 0.9rem;">Este é um simulador educativo. Os resultados não são garantidos. A performance passada não garante resultados futuros.</p>
+                        </div>
+                    </div>
+
+                    <h3>Como Usar</h3>
+                    <p>Mexe nos números. Vê o que muda. Experimenta cenários. Isto é educativo, mas real. A ideia é compreenderes como o DCA funciona ao longo do tempo.</p>
+                `, en: `
+                    <h3>The Power of Simulation</h3>
+                    <p>Below is an interactive DCA (Dollar Cost Averaging) simulator. Fill in the values and see the chart of how your investment evolves over time.</p>
+                ` }
+            },
+            {
+                id: 'cap7', type: 'base', number: 7,
+                title: { pt: 'Calculadora Fiscal Portuguesa', en: 'Portuguese Tax Calculator' },
+                subtitle: { pt: 'Estima os teus impostos', en: 'Estimate your taxes' },
+                content: { pt: `
+                    <h3>Fiscalidade em Portugal</h3>
+                    <p>Portugal trata crypto como "valor imobiliário" para fins fiscais. Diferentes operações têm regras diferentes.</p>
+                    <h3>Regra dos 365 Dias</h3>
+                    <p>Se deténs um ativo MAIS de 365 dias consecutivos e depois o vende: a mais-valia é ISENTA de IRS.</p>
+                    <p>Se vendes ANTES de 365 dias: mais-valia é tributada como rendimento (taxa normal de IRS, 14-48% conforme escalão).</p>
+                    <div class="example-box">Exemplo:<br>Compras 1 BTC em Jan/2023 por €20k<br>Vendes em Jan/2024 (365+ dias) por €40k<br>Ganho: €20k<br>IRS: €0 (isento)</div>
+
+                    <div class="simulator-section">
+                        <h3>Calculadora Fiscal Simplificada</h3>
+                        <div class="simulator-grid">
+                            <div class="simulator-inputs">
+                                <div class="input-group">
+                                    <label>Preço de Compra (€)</label>
+                                    <input type="number" id="tax-buy" value="10000" min="0">
+                                </div>
+                                <div class="input-group">
+                                    <label>Preço de Venda (€)</label>
+                                    <input type="number" id="tax-sell" value="15000" min="0">
+                                </div>
+                                <div class="input-group">
+                                    <label>Dias de Detenção</label>
+                                    <input type="number" id="tax-days" value="200" min="0">
+                                </div>
+                                <div class="input-group">
+                                    <label>Taxa IRS (%)</label>
+                                    <input type="number" id="tax-rate" value="28.5" min="0" max="100" step="0.5">
+                                </div>
+                                <button class="simulate-button" onclick="runTaxCalculator()">Calcular</button>
+                            </div>
+                            <div class="simulator-results" id="tax-results" style="display: none;">
+                                <h4>Resultados</h4>
+                                <div class="result-row">
+                                    <span class="result-label">Mais-Valia:</span>
+                                    <span class="result-value" id="tax-gain">€0</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">IRS Estimado:</span>
+                                    <span class="result-value" id="tax-irs">€0</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Valor Líquido:</span>
+                                    <span class="result-value" id="tax-net">€0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout danger" style="margin-top: var(--spacing-lg);">
+                        <div class="callout-title">Aviso Crítico</div>
+                        <p>Isto não é aconselhamento fiscal. Consulta um contabilista ou especialista fiscal português ANTES de fazer operações de alto valor ou complexas. Uma decisão errada pode custar muito.</p>
+                    </div>
+
+                    <h3>Documentação</h3>
+                    <p>Guarda TUDO: compra, venda, datas, preços. Screenshots de exchanges. Movimentações bancárias. Se a AT (Autoridade Tributária) questiona, precisas provar.</p>
+                `, en: `
+                    <h3>Taxation in Portugal</h3>
+                    <p>Portugal treats crypto as "movable property" for tax purposes. Different operations have different rules.</p>
+                ` }
+            },
+            {
+                id: 'cap8', type: 'base', number: 8,
+                title: { pt: 'Comparador de Ativos', en: 'Asset Comparator' },
+                subtitle: { pt: 'Compara dois ativos side-by-side', en: 'Compare two assets side-by-side' },
+                content: { pt: `
+                    <h3>Como Escolher Ativos</h3>
+                    <p>Quando tens dois ativos potenciais, como decidir qual é melhor? Este comparador te ajuda.</p>
+
+                    <div class="simulator-section">
+                        <h3>Comparador de Ativos</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+                            <div class="input-group">
+                                <label>Ativo 1</label>
+                                <select id="asset1" style="padding: 0.8rem; border: 2px solid var(--color-border-light); border-radius: 8px;">
+                                    <option value="BTC">Bitcoin (BTC)</option>
+                                    <option value="ETH">Ethereum (ETH)</option>
+                                    <option value="SOL">Solana (SOL)</option>
+                                    <option value="ADA">Cardano (ADA)</option>
+                                    <option value="XRP">Ripple (XRP)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Ativo 2</label>
+                                <select id="asset2" style="padding: 0.8rem; border: 2px solid var(--color-border-light); border-radius: 8px;">
+                                    <option value="ETH">Ethereum (ETH)</option>
+                                    <option value="BTC">Bitcoin (BTC)</option>
+                                    <option value="SOL">Solana (SOL)</option>
+                                    <option value="ADA">Cardano (ADA)</option>
+                                    <option value="XRP">Ripple (XRP)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="simulate-button" onclick="compareAssets()" style="margin-top: var(--spacing-md); width: 100%;">Comparar</button>
+                        <div id="comparison-results" style="margin-top: var(--spacing-lg); display: none;">
+                            <table style="width: 100%; border-collapse: collapse; color: var(--color-text-light);">
+                                <tr style="border-bottom: 1px solid var(--color-border-light);">
+                                    <th style="padding: var(--spacing-md); text-align: left;">Métrica</th>
+                                    <th style="padding: var(--spacing-md); text-align: left;" id="comp-asset1">Asset 1</th>
+                                    <th style="padding: var(--spacing-md); text-align: left;" id="comp-asset2">Asset 2</th>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--color-border-light);">
+                                    <td style="padding: var(--spacing-md);">Preço</td>
+                                    <td style="padding: var(--spacing-md);" id="comp-price1">-</td>
+                                    <td style="padding: var(--spacing-md);" id="comp-price2">-</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--color-border-light);">
+                                    <td style="padding: var(--spacing-md);">Volatilidade</td>
+                                    <td style="padding: var(--spacing-md);" id="comp-vol1">-</td>
+                                    <td style="padding: var(--spacing-md);" id="comp-vol2">-</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: var(--spacing-md);">Risco Relativo</td>
+                                    <td style="padding: var(--spacing-md);" id="comp-risk1">-</td>
+                                    <td style="padding: var(--spacing-md);" id="comp-risk2">-</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <h3>O que Procurar</h3>
+                    <ul>
+                        <li><strong>Capitalização:</strong> Maior = mais estável. Menor = mais risco, mais upside.</li>
+                        <li><strong>Função:</strong> O que faz? Bitcoin = ouro digital. Ethereum = plataforma. Solana = blockchain rápida.</li>
+                        <li><strong>Adoção:</strong> Quantas pessoas usam?</li>
+                        <li><strong>Equipa:</strong> Quem está por trás? São sérios?</li>
+                        <li><strong>Volatilidade:</strong> Quanto sobe e desce? Toleras?</li>
+                    </ul>
+                `, en: `
+                    <h3>How to Choose Assets</h3>
+                    <p>When you have two potential assets, how do you decide which is better? This comparator helps you.</p>
+                ` }
+            },
+            {
+                id: 'adv1', type: 'advanced', number: 9,
+                title: { pt: 'On-Chain Analytics Básico', en: 'Basic On-Chain Analytics' },
+                subtitle: { pt: 'Ler a blockchain como um livro aberto', en: 'Reading the blockchain like an open book' },
+                content: { pt: `
+                    <h3>O que é On-Chain Analytics?</h3>
+                    <p>A blockchain é transparente. Todas as transações estão visíveis. On-chain analytics é a ciência de interpretar esses dados para entender comportamentos de mercado.</p>
+                    <h3>SOPR - Spent Output Profit Ratio</h3>
+                    <p>Mede a proporção de BTC que está a ser movida com lucro vs prejuízo.</p>
+                    <p>SOPR > 1 = Mais BTC move-se com lucro. Mercado eufórico, picos próximos.</p>
+                    <p>SOPR < 1 = Mais BTC move-se com prejuízo. Desespero, possível fundo.</p>
+                    <h3>Fluxos de Exchanges</h3>
+                    <p>Quando muita BTC entra num exchange: preparação para vender (bearish).</p>
+                    <p>Quando muita BTC sai: retira para wallet própria (bullish — hodling).</p>
+                    <h3>Detentores de Longo Prazo</h3>
+                    <p>Quantidade de BTC que não se move há mais de 1 ano. Se aumenta, mercado está acumulando (bullish). Se diminui, detentores antigos estão a vender (bearish).</p>
+                    <h3>MVRV Ratio</h3>
+                    <p>Market Value / Realized Value. Compara valor de mercado com o preço médio de compra de todos.</p>
+                    <p>MVRV alto = Overvalued possível. MVRV baixo = Undervalued possível.</p>
+                `, en: `
+                    <h3>What is On-Chain Analytics?</h3>
+                    <p>The blockchain is transparent. All transactions are visible. On-chain analytics is the science of interpreting that data.</p>
+                ` }
+            },
+            {
+                id: 'adv2', type: 'advanced', number: 10,
+                title: { pt: 'Psicologia Avançada', en: 'Advanced Psychology' },
+                subtitle: { pt: 'Por que tomas decisões ruins', en: 'Why you make bad decisions' },
+                content: { pt: `
+                    <h3>Os Viéses Cognitivos</h3>
+                    <p>Teu cérebro é irracional. Evoluiu para a sobrevivência, não para investing.</p>
+                    <h3>FOMO - Fear Of Missing Out</h3>
+                    <p
