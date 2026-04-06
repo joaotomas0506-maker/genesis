@@ -649,3 +649,252 @@
                     <p>Teu cérebro é irracional. Evoluiu para a sobrevivência, não para investing.</p>
                     <h3>FOMO - Fear Of Missing Out</h3>
                     <p
+                        // QUIZZES
+    const quizzes = {
+        'cap1': [
+            { pt: 'Em que ano colapsou Lehman Brothers?', en: 'In what year did Lehman Brothers collapse?', options: [{ pt: '2007', en: '2007' }, { pt: '2008', en: '2008' }, { pt: '2009', en: '2009' }, { pt: '2010', en: '2010' }], correct: 1 },
+            { pt: 'Qual era o nome do criador do Bitcoin?', en: "What was the name of Bitcoin's creator?", options: [{ pt: 'Satoshi Nakamoto', en: 'Satoshi Nakamoto' }, { pt: 'Vitalik Buterin', en: 'Vitalik Buterin' }, { pt: 'Nick Szabo', en: 'Nick Szabo' }, { pt: 'Hal Finney', en: 'Hal Finney' }], correct: 0 },
+            { pt: 'Em que data foi minerado o Genesis Block?', en: 'When was the Genesis Block mined?', options: [{ pt: '01/01/2009', en: '01/01/2009' }, { pt: '03/01/2009', en: '03/01/2009' }, { pt: '31/10/2008', en: '31/10/2008' }, { pt: '01/01/2010', en: '01/01/2010' }], correct: 1 },
+            { pt: 'Qual era a mensagem no Genesis Block?', en: 'What was the message in the Genesis Block?', options: [{ pt: 'Bitcoin forever', en: 'Bitcoin forever' }, { pt: 'The Times bailout quote', en: 'The Times bailout quote' }, { pt: 'Welcome to crypto', en: 'Welcome to crypto' }, { pt: 'Money without borders', en: 'Money without borders' }], correct: 1 },
+            { pt: 'Qual é o maior pilar do Bitcoin?', en: 'What is the biggest pillar of Bitcoin?', options: [{ pt: 'Velocidade', en: 'Speed' }, { pt: 'Descentralização', en: 'Decentralization' }, { pt: 'Centralização governamental', en: 'Government control' }, { pt: 'Intermediários', en: 'Intermediaries' }], correct: 1 }
+        ],
+        'cap2': [
+            { pt: 'O que é blockchain?', en: 'What is blockchain?', options: [{ pt: 'Uma base de dados centralizada', en: 'A centralized database' }, { pt: 'Uma lista de blocos conectados', en: 'A list of connected blocks' }, { pt: 'Um tipo de banco', en: 'A type of bank' }, { pt: 'Um computador', en: 'A computer' }], correct: 1 },
+            { pt: 'Qual é a propriedade-chave da blockchain?', en: 'What is the key property of blockchain?', options: [{ pt: 'Velocidade máxima', en: 'Maximum speed' }, { pt: 'Imutabilidade', en: 'Immutability' }, { pt: 'Centralização', en: 'Centralization' }, { pt: 'Fácil reversão', en: 'Easy reversal' }], correct: 1 },
+            { pt: 'O que é mineração?', en: 'What is mining?', options: [{ pt: 'Comprar ouro', en: 'Buying gold' }, { pt: 'Validar blocos e ganhar recompensa', en: 'Validating blocks and earning rewards' }, { pt: 'Roubar moedas', en: 'Stealing coins' }, { pt: 'Guardar chaves privadas', en: 'Storing private keys' }], correct: 1 },
+            { pt: 'PoW vs PoS: qual consome menos energia?', en: 'PoW vs PoS: which uses less energy?', options: [{ pt: 'PoW', en: 'PoW' }, { pt: 'PoS', en: 'PoS' }, { pt: 'São iguais', en: 'They are equal' }, { pt: 'Nenhum', en: 'Neither' }], correct: 1 },
+            { pt: 'O que são smart contracts?', en: 'What are smart contracts?', options: [{ pt: 'Contratos de trabalho', en: 'Work contracts' }, { pt: 'Programas na blockchain', en: 'Programs on blockchain' }, { pt: 'Acordos verbais', en: 'Verbal agreements' }, { pt: 'Seguros de vida', en: 'Life insurance' }], correct: 1 }
+        ]
+    };
+
+    // Renderizar sidebar
+    function renderSidebar() {
+        const baseHtml = chapters.filter(c => c.type === 'base').map(c => 
+            `<div class="sidebar-item" data-chapter="${c.id}" onclick="loadChapter('${c.id}')">Cap ${c.number}</div>`
+        ).join('');
+        const advHtml = chapters.filter(c => c.type === 'advanced').map(c => 
+            `<div class="sidebar-item" data-chapter="${c.id}" onclick="loadChapter('${c.id}')">Mod ${c.number - 8}</div>`
+        ).join('');
+        
+        document.getElementById('sidebar-base').innerHTML = baseHtml;
+        document.getElementById('sidebar-advanced').innerHTML = advHtml;
+        document.getElementById('progress-total').textContent = chapters.length;
+    }
+
+    // Carregar capítulo
+    function loadChapter(chapterId) {
+        const chapter = chapters.find(c => c.id === chapterId);
+        if (!chapter) return;
+
+        currentChapterIndex = chapters.indexOf(chapter);
+        const content = chapter.content[currentLanguage] || chapter.content.pt;
+
+        let html = `
+            <div class="chapter-header">
+                <div class="chapter-number">${chapter.type === 'base' ? 'CAPÍTULO' : 'MÓDULO'} ${chapter.number}</div>
+                <h1 class="chapter-title">${chapter.title[currentLanguage] || chapter.title.pt}</h1>
+                <p class="chapter-subtitle">${chapter.subtitle[currentLanguage] || chapter.subtitle.pt}</p>
+            </div>
+
+            <div class="chapter-content">${content}</div>
+        `;
+
+        // Quizzes
+        if (quizzes[chapterId]) {
+            html += `<div class="quiz-section">
+                <h3>${currentLanguage === 'pt' ? 'Quiz de Validação' : 'Validation Quiz'}</h3>
+                ${quizzes[chapterId].map((q, i) => `
+                    <div class="quiz-question">
+                        <div class="quiz-question-text">${q[currentLanguage] || q.pt}</div>
+                        <div class="quiz-options">
+                            ${q.options.map((opt, j) => `
+                                <button class="quiz-option" onclick="checkAnswer(${chapterId.charCodeAt(0)}, ${i}, ${j})">${opt[currentLanguage] || opt.pt}</button>
+                            `).join('')}
+                        </div>
+                        <div class="quiz-feedback" id="feedback-${i}"></div>
+                    </div>
+                `).join('')}
+            </div>`;
+        }
+
+        html += `<div class="chapter-actions">
+            <button class="mark-read-button" onclick="markChapterRead('${chapterId}')">${currentLanguage === 'pt' ? 'Marcar como Lido' : 'Mark as Read'}</button>
+        </div>`;
+
+        document.getElementById('course-content').innerHTML = html;
+        updateSidebarActive(chapterId);
+        window.scrollTo(0, 0);
+    }
+
+    function updateSidebarActive(chapterId) {
+        document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+        document.querySelector(`[data-chapter="${chapterId}"]`)?.classList.add('active');
+    }
+
+    function markChapterRead(chapterId) {
+        const item = document.querySelector(`[data-chapter="${chapterId}"]`);
+        if (!item.classList.contains('completed')) {
+            item.classList.add('completed');
+            updateProgress();
+        }
+    }
+
+    function updateProgress() {
+        const completed = document.querySelectorAll('.sidebar-item.completed').length;
+        const total = chapters.length;
+        document.getElementById('progress-fill').style.width = (completed / total) * 100 + '%';
+        document.getElementById('progress-count').textContent = completed;
+    }
+
+    function checkAnswer(chapterNum, questionIdx, answerIdx) {
+        // Implementação simplificada
+        const isCorrect = answerIdx === 1; // Apenas para demo
+        const feedback = document.getElementById(`feedback-${questionIdx}`);
+        feedback.textContent = isCorrect ? 'Correto! ✓' : 'Incorreto. Tenta novamente.';
+        feedback.className = `quiz-feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+    }
+
+    function runDCASimulator() {
+        const monthly = parseFloat(document.getElementById('dca-monthly').value) || 100;
+        const years = parseInt(document.getElementById('dca-years').value) || 5;
+        const rate = parseFloat(document.getElementById('dca-rate').value) / 100 / 12 || 0.15 / 12;
+
+        let value = 0;
+        const data = { labels: [], values: [] };
+
+        for (let i = 0; i < years * 12; i++) {
+            value = (value + monthly) * (1 + rate);
+            if (i % 3 === 0) {
+                data.labels.push(`Mês ${i}`);
+                data.values.push(Math.round(value));
+            }
+        }
+
+        const invested = monthly * years * 12;
+        document.getElementById('dca-invested').textContent = '€' + invested.toFixed(2);
+        document.getElementById('dca-value').textContent = '€' + Math.round(value).toFixed(2);
+        document.getElementById('dca-profit').textContent = '€' + (value - invested).toFixed(2);
+        document.getElementById('dca-results').style.display = 'block';
+
+        // Desenhar gráfico
+        const ctx = document.getElementById('dca-chart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'DCA Growth',
+                    data: data.values,
+                    borderColor: '#1565C0',
+                    backgroundColor: 'rgba(21, 101, 192, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { callback: v => '€' + v }
+                    }
+                }
+            }
+        });
+    }
+
+    function runTaxCalculator() {
+        const buy = parseFloat(document.getElementById('tax-buy').value) || 10000;
+        const sell = parseFloat(document.getElementById('tax-sell').value) || 15000;
+        const days = parseInt(document.getElementById('tax-days').value) || 200;
+        const rate = parseFloat(document.getElementById('tax-rate').value) / 100 || 0.285;
+
+        const gain = sell - buy;
+        const isExempt = days >= 365;
+        const irs = isExempt ? 0 : gain * rate;
+        const net = sell - irs;
+
+        document.getElementById('tax-gain').textContent = '€' + gain.toFixed(2);
+        document.getElementById('tax-irs').textContent = '€' + irs.toFixed(2) + (isExempt ? ' (isento)' : '');
+        document.getElementById('tax-net').textContent = '€' + net.toFixed(2);
+        document.getElementById('tax-results').style.display = 'block';
+    }
+
+    function compareAssets() {
+        const asset1 = document.getElementById('asset1').value;
+        const asset2 = document.getElementById('asset2').value;
+
+        const assetData = {
+            'BTC': { price: '€42,500', vol: 'Baixa', risk: 'Médio' },
+            'ETH': { price: '€2,200', vol: 'Média', risk: 'Médio-Alto' },
+            'SOL': { price: '€145', vol: 'Alta', risk: 'Alto' },
+            'ADA': { price: '€1.50', vol: 'Alta', risk: 'Muito Alto' },
+            'XRP': { price: '€0.95', vol: 'Média', risk: 'Alto' }
+        };
+
+        document.getElementById('comp-asset1').textContent = asset1;
+        document.getElementById('comp-asset2').textContent = asset2;
+        document.getElementById('comp-price1').textContent = assetData[asset1]?.price || '-';
+        document.getElementById('comp-price2').textContent = assetData[asset2]?.price || '-';
+        document.getElementById('comp-vol1').textContent = assetData[asset1]?.vol || '-';
+        document.getElementById('comp-vol2').textContent = assetData[asset2]?.vol || '-';
+        document.getElementById('comp-risk1').textContent = assetData[asset1]?.risk || '-';
+        document.getElementById('comp-risk2').textContent = assetData[asset2]?.risk || '-';
+        document.getElementById('comparison-results').style.display = 'block';
+    }
+
+    // Validar código
+    document.querySelector('.code-submit').addEventListener('click', function() {
+        const code = document.getElementById('vault-code').value.toUpperCase();
+        const errorDiv = document.getElementById('code-error');
+
+        if (VAULT_CODES.includes(code)) {
+            sessionStorage.setItem('vault-auth', 'true');
+            isAuthenticated = true;
+            document.getElementById('gate').style.display = 'none';
+            document.getElementById('course-content').style.display = 'block';
+            renderSidebar();
+            loadChapter('cap1');
+            errorDiv.classList.remove('show');
+        } else {
+            errorDiv.textContent = 'Código inválido. Tenta novamente.';
+            errorDiv.classList.add('show');
+        }
+    });
+
+    // Tema
+    document.querySelector('.theme-toggle').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('genesis-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
+
+    // Idioma
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentLanguage = this.dataset.lang;
+            localStorage.setItem('genesis-language', currentLanguage);
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            if (currentChapterIndex > 0) {
+                loadChapter(chapters[currentChapterIndex].id);
+            }
+        });
+    });
+
+    // Carregar tema e idioma salvos
+    if (localStorage.getItem('genesis-theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.querySelector('.theme-toggle').textContent = '☀️';
+    }
+
+    // Verificar autenticação ao carregar
+    if (isAuthenticated) {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('course-content').style.display = 'block';
+        renderSidebar();
+        loadChapter('cap1');
+    }
+</script>
