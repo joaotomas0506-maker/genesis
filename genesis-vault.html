@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Genesis Vault — Curso de Criptoativos</title>
+    <title>Genesis Vault — Curso Completo</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
@@ -47,11 +46,25 @@
 
         header { position: fixed; top: 0; width: 100%; height: 80px; background-color: var(--color-bg-light); border-bottom: 1px solid var(--color-border-light); display: flex; justify-content: space-between; align-items: center; padding: 0 var(--spacing-lg); z-index: 1000; }
         body.dark-mode header { background-color: var(--color-bg-dark-secondary); border-bottom-color: var(--color-border-dark); }
-        .navbar-logo { font-family: var(--font-family-display); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); text-decoration: none; }
+        
+        .navbar-logo { 
+            font-family: var(--font-family-display); 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: var(--color-primary); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        
+        .navbar-logo svg { width: 32px; height: 32px; }
+        
         .navbar-links { display: flex; gap: var(--spacing-xl); list-style: none; }
         .navbar-links a { text-decoration: none; color: var(--color-text-light); font-weight: 500; }
         body.dark-mode .navbar-links a { color: var(--color-text-dark); }
         .navbar-links a:hover { color: var(--color-primary); }
+        
         .navbar-controls { display: flex; gap: var(--spacing-md); align-items: center; }
         .language-toggle { display: flex; gap: 0.5rem; background-color: var(--color-bg-light-secondary); padding: 0.4rem; border-radius: 8px; border: none; }
         body.dark-mode .language-toggle { background-color: var(--color-bg-dark); }
@@ -62,6 +75,276 @@
         .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
         .hamburger span { width: 25px; height: 3px; background-color: var(--color-text-light); border-radius: 2px; }
         body.dark-mode .hamburger span { background-color: var(--color-text-dark); }
+
+        .main-content { max-width: 1200px; margin: 0 auto; padding: var(--spacing-xl) var(--spacing-lg); margin-top: 80px; }
+
+        .gate-container { max-width: 700px; margin: 100px auto; text-align: center; }
+        .gate-container h1 { font-size: 2.5rem; margin-bottom: var(--spacing-md); }
+        .gate-container p { color: var(--color-text-light-secondary); margin-bottom: var(--spacing-lg); }
+        body.dark-mode .gate-container p { color: var(--color-text-dark-secondary); }
+
+        .code-input-section { background-color: var(--color-bg-light); padding: var(--spacing-xl); border-radius: 12px; border: 2px solid var(--color-border-light); margin-top: var(--spacing-xl); }
+        body.dark-mode .code-input-section { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
+        .code-input { width: 100%; padding: 0.8rem; font-size: 1rem; border: 2px solid var(--color-border-light); border-radius: 8px; margin-bottom: var(--spacing-md); font-family: 'Courier New', monospace; text-transform: uppercase; }
+        body.dark-mode .code-input { background-color: var(--color-bg-dark); color: var(--color-text-dark); border-color: var(--color-border-dark); }
+        .code-error { background-color: rgba(231, 76, 60, 0.1); color: var(--color-danger); padding: var(--spacing-md); border-radius: 8px; margin-bottom: var(--spacing-md); display: none; }
+        .code-error.show { display: block; }
+        .code-submit { width: 100%; padding: 0.8rem; background-color: var(--color-primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .code-submit:hover { background-color: var(--color-primary-dark); }
+
+        .course-container { display: none; }
+        .course-container.active { display: flex; gap: var(--spacing-lg); }
+
+        .sidebar { width: 280px; background-color: var(--color-bg-light); border: 1px solid var(--color-border-light); border-radius: 12px; padding: var(--spacing-lg); max-height: 80vh; overflow-y: auto; position: sticky; top: 100px; }
+        body.dark-mode .sidebar { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
+        
+        .sidebar h3 { font-size: 0.9rem; font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-md); text-transform: uppercase; }
+        .sidebar-chapter { padding: var(--spacing-sm); margin-bottom: var(--spacing-sm); border-radius: 8px; cursor: pointer; font-size: 0.95rem; transition: all 0.3s; }
+        .sidebar-chapter:hover { background-color: var(--color-bg-light-secondary); }
+        body.dark-mode .sidebar-chapter:hover { background-color: var(--color-bg-dark); }
+        .sidebar-chapter.active { background-color: var(--color-primary); color: white; font-weight: 600; }
+
+        .course-content { flex: 1; }
+        .chapter-header { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); color: white; padding: var(--spacing-xl); border-radius: 12px; margin-bottom: var(--spacing-xl); }
+        .chapter-number { font-size: 0.9rem; opacity: 0.9; }
+        .chapter-title { font-size: 2rem; font-weight: 800; margin: var(--spacing-md) 0; }
+
+        .chapter-body { background-color: var(--color-bg-light); border: 1px solid var(--color-border-light); border-radius: 12px; padding: var(--spacing-xl); }
+        body.dark-mode .chapter-body { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
+
+        .example-box { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; border-left: 4px solid var(--color-primary); margin: var(--spacing-md) 0; }
+        body.dark-mode .example-box { background-color: var(--color-bg-dark); }
+
+        .callout { padding: var(--spacing-lg); border-radius: 8px; margin: var(--spacing-md) 0; border-left: 4px solid; }
+        .callout.warning { background-color: rgba(243, 156, 18, 0.1); border-left-color: var(--color-warning); }
+        .callout.success { background-color: rgba(46, 204, 113, 0.1); border-left-color: var(--color-success); }
+        .callout-title { font-weight: 700; margin-bottom: var(--spacing-sm); }
+
+        .quiz { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; margin-top: var(--spacing-xl); }
+        body.dark-mode .quiz { background-color: var(--color-bg-dark); }
+        .quiz h4 { color: var(--color-primary); margin-bottom: var(--spacing-md); }
+        .quiz-question { margin-bottom: var(--spacing-md); }
+        .quiz-option { background-color: white; padding: var(--spacing-md); border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; border: 2px solid transparent; }
+        body.dark-mode .quiz-option { background-color: var(--color-bg-dark-secondary); }
+        .quiz-option:hover { border-color: var(--color-primary); }
+        .quiz-option.selected { background-color: var(--color-primary); color: white; }
+
+        .progress-bar { width: 100%; height: 8px; background-color: var(--color-border-light); border-radius: 4px; overflow: hidden; margin-top: var(--spacing-sm); }
+        body.dark-mode .progress-bar { background-color: var(--color-border-dark); }
+        .progress-fill { height: 100%; background-color: var(--color-success); transition: width 0.3s; }
+
+        .nav-buttons { display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl); }
+        .nav-buttons button { flex: 1; padding: 0.8rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .nav-prev { background-color: var(--color-bg-light-secondary); color: var(--color-text-light); }
+        body.dark-mode .nav-prev { background-color: var(--color-bg-dark); color: var(--color-text-dark); }
+        .nav-next { background-color: var(--color-primary); color: white; }
+        .nav-next:hover { background-color: var(--color-primary-dark); }
+
+        @media (max-width: 768px) {
+            .navbar-links { display: none; }
+            .hamburger { display: flex; }
+            .course-container.active { flex-direction: column; }
+            .sidebar { width: 100%; max-height: none; position: static; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="navbar-logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="10" height="10" stroke="#1565C0" stroke-width="2" fill="none" rx="2"/>
+                <rect x="18" y="4" width="10" height="10" stroke="#1565C0" stroke-width="2" fill="none" rx="2"/>
+                <rect x="4" y="18" width="10" height="10" stroke="#1565C0" stroke-width="2" fill="none" rx="2"/>
+                <rect x="18" y="18" width="10" height="10" stroke="#1E88E5" stroke-width="2" fill="#1E88E5" rx="2"/>
+                <line x1="14" y1="9" x2="18" y2="9" stroke="#1565C0" stroke-width="1.5"/>
+                <line x1="9" y1="14" x2="9" y2="18" stroke="#1565C0" stroke-width="1.5"/>
+                <line x1="23" y1="14" x2="23" y2="18" stroke="#1E88E5" stroke-width="1.5"/>
+            </svg>
+            GENESIS
+        </a>
+        <nav class="navbar-links">
+            <a href="index.html">Voltar</a>
+            <a href="genesis-signal.html">Signal</a>
+        </nav>
+        <div class="navbar-controls">
+            <div class="language-toggle">
+                <button class="lang-btn active" data-lang="pt">PT</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <button class="theme-toggle">🌙</button>
+        </div>
+        <div class="hamburger"><span></span><span></span><span></span></div>
+    </header>
+
+    <div class="main-content">
+        <div id="gate" class="gate-container">
+            <h1>Genesis Vault</h1>
+            <p>O curso estruturado com 14 capítulos base + módulos avançados. Quizzes, simuladores práticos e análise de fiscalidade portuguesa.</p>
+            <div class="code-input-section">
+                <label style="font-weight: 600; margin-bottom: var(--spacing-sm); display: block;">Introduz o teu código de acesso</label>
+                <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-md);">Formato: GV-XXXX-2026 (maiúsculas)</div>
+                <input type="text" class="code-input" id="vault-code" placeholder="GV-XXXX-2026" maxlength="20">
+                <div class="code-error" id="code-error"></div>
+                <button class="code-submit">Validar Código</button>
+            </div>
+            <div style="margin-top: var(--spacing-xl); color: var(--color-text-light-secondary); font-size: 0.9rem;">
+                <p>Não tens código? <a href="index.html" style="color: var(--color-primary); text-decoration: none;">Compra o Vault aqui</a></p>
+            </div>
+        </div>
+
+        <div id="course-container" class="course-container">
+            <aside class="sidebar" id="sidebar">
+                <h3>Capítulos Básicos</h3>
+                <div id="basic-chapters"></div>
+                <h3 style="margin-top: var(--spacing-xl);">Módulos Avançados</h3>
+                <div id="advanced-chapters"></div>
+            </aside>
+
+            <main class="course-content">
+                <div id="chapter-header" class="chapter-header">
+                    <div class="chapter-number" id="chapter-number"></div>
+                    <div class="chapter-title" id="chapter-title"></div>
+                </div>
+                <div id="chapter-body" class="chapter-body"></div>
+                <div class="nav-buttons">
+                    <button class="nav-buttons nav-prev" onclick="previousChapter()">← Anterior</button>
+                    <button class="nav-buttons nav-next" onclick="nextChapter()">Próximo →</button>
+                </div>
+                <div style="margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 1px solid var(--color-border-light);">
+                    <p style="font-size: 0.9rem; color: var(--color-text-light-secondary);">Progresso: <span id="progress-current">0</span>/<span id="progress-total">14</span></p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Botões de Redes Sociais Flutuantes -->
+    <div style="position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column-reverse; gap: 15px; z-index: 999;">
+        <a href="https://wa.me/351000000000" target="_blank" class="social-button whatsapp" aria-label="WhatsApp" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #25D366;">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://www.tiktok.com/@genesis" target="_blank" class="social-button tiktok" aria-label="TikTok" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #000000;">
+            <i class="fab fa-tiktok"></i>
+        </a>
+        <a href="https://www.instagram.com/genesis" target="_blank" class="social-button instagram" aria-label="Instagram" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://discord.gg/genesis" target="_blank" class="social-button discord" aria-label="Discord" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #5865F2;">
+            <i class="fab fa-discord"></i>
+        </a>
+    </div>
+
+    <script>
+        // CÓDIGOS ATUALIZADOS — SUBSTITUI AQUI
+        const VAULT_CODES = ['GV-SPRING-2026', 'GV-K9M2-2026', 'GV-P7X4-2026', 'GV-R5L8-2026', 'GV-ADMIN-2026'];
+
+        const chapters = [
+            // CAPÍTULOS BÁSICOS
+            {
+                id: 'cap1', type: 'basic', number: 1,
+                title: { pt: 'O Que É Bitcoin?', en: 'What is Bitcoin?' },
+                subtitle: { pt: 'Entender a base', en: 'Understanding the basics' },
+                content: { pt: '<h3>Bitcoin 101</h3><p>Bitcoin é a primeira criptomoeda descentralizada, criada em 2009 por uma pessoa (ou grupo) sob pseudónimo Satoshi Nakamoto. É baseado em blockchain.</p><div class="example-box"><strong>Analogia simples:</strong> Bitcoin é como dinheiro digital que não precisa de banco. Tu és o teu próprio banco.</div>', en: '<h3>Bitcoin 101</h3><p>Bitcoin is the first decentralized cryptocurrency, created in 2009 by a person (or group) under the pseudonym Satoshi Nakamoto. It is based on blockchain.</p><div class="example-box"><strong>Simple analogy:</strong> Bitcoin is like digital money that doesn\'t need a bank. You are your own bank.</div>' }
+            },
+            {
+                id: 'cap2', type: 'basic', number: 2,
+                title: { pt: 'Blockchain: A Tecnologia Base', en: 'Blockchain: The Base Technology' },
+                subtitle: { pt: 'Como funciona', en: 'How it works' },
+                content: { pt: '<h3>Entender Blockchain</h3><p>Blockchain é um livro-razão distribuído. Imagina um Excel que é partilhado por milhares de computadores. Ninguém consegue trapacear porque todos têm a mesma cópia.</p><div class="callout warning"><div class="callout-title">⚠ Importante:</div><p>Cada bloco contém uma assinatura única (hash). Se alguém tenta mudar um bloco, o hash muda e todos veem a fraude.</p></div>', en: '<h3>Understanding Blockchain</h3><p>Blockchain is a distributed ledger. Imagine an Excel sheet that is shared by thousands of computers. No one can cheat because everyone has the same copy.</p><div class="callout warning"><div class="callout-title">⚠ Important:</div><p>Each block contains a unique signature (hash). If someone tries to change a block, the hash changes and everyone sees the fraud.</p></div>' }
+            },
+            {
+                id: 'cap3', type: 'basic', number: 3,
+                title: { pt: 'Carteiras e Segurança', en: 'Wallets and Security' },
+                subtitle: { pt: 'Como guardar crypto', en: 'How to store crypto' },
+                content: { pt: '<h3>Tipos de Carteiras</h3><p><strong>1. Hot Wallet (Online):</strong> Rápido, fácil, menos seguro. Exemplo: MetaMask, Trust Wallet.</p><p><strong>2. Cold Wallet (Offline):</strong> Muito seguro, mais lento. Exemplo: Ledger, Trezor.</p><div class="callout success"><div class="callout-title">✓ Melhor Prática:</div><p>Para grandes quantidades: cold wallet. Para trading: hot wallet com pequenas quantidades.</p></div>', en: '<h3>Wallet Types</h3><p><strong>1. Hot Wallet (Online):</strong> Fast, easy, less secure. Example: MetaMask, Trust Wallet.</p><p><strong>2. Cold Wallet (Offline):</strong> Very secure, slower. Example: Ledger, Trezor.</p><div class="callout success"><div class="callout-title">✓ Best Practice:</div><p>For large amounts: cold wallet. For trading: hot wallet with small amounts.</p></div>' }
+            },
+            {
+                id: 'cap4', type: 'basic', number: 4,
+                title: { pt: 'Análise Técnica Básica', en: 'Basic Technical Analysis' },
+                subtitle: { pt: 'Ler gráficos', en: 'Reading charts' },
+                content: { pt: '<h3>Os 3 Indicadores Essenciais</h3><p><strong>1. Médias Móveis (MM):</strong> Mostram a tendência geral.</p><p><strong>2. RSI (Relative Strength Index):</strong> Mostra se está overbought (>70) ou oversold (<30).</p><p><strong>3. MACD:</strong> Identifica momentum e reversões.</p><div class="example-box">Regra de Ouro: Não trades contra a MM200. Se a MM200 é ascendente, tudo tende a subir.</div>', en: '<h3>The 3 Essential Indicators</h3><p><strong>1. Moving Averages (MA):</strong> Show the overall trend.</p><p><strong>2. RSI (Relative Strength Index):</strong> Shows if overbought (>70) or oversold (<30).</p><p><strong>3. MACD:</strong> Identifies momentum and reversals.</p><div class="example-box">Golden Rule: Don\'t trade against the 200 MA. If the 200 MA is upward, everything tends to go up.</div>' }
+            },
+            {
+                id: 'cap5', type: 'basic', number: 5,
+                title: { pt: 'Gestão de Risco', en: 'Risk Management' },
+                subtitle: { pt: 'Não perder dinheiro', en: 'Not losing money' },
+                content: { pt: '<h3>As 3 Regras de Ouro</h3><p><strong>1. Posição máxima 5% do portfolio:</strong> Se tens €1000, não metes mais de €50 numa posição.</p><p><strong>2. Stop-loss obrigatório:</strong> Define sempre uma perda máxima (ex: -10%).</p><p><strong>3. Risk/Reward 1:3:</strong> Só trades se ganhos potenciais são 3x maiores que perdas.</p><div class="callout warning"><div class="callout-title">⚠ Risco Real:</div><p>80% dos traders perdem dinheiro porque não respeitam estas regras.</p></div>', en: '<h3>The 3 Golden Rules</h3><p><strong>1. Maximum position 5% of portfolio:</strong> If you have €1000, don\'t put more than €50 in one position.</p><p><strong>2. Mandatory stop-loss:</strong> Always define a maximum loss (e.g., -10%).</p><p><strong>3. Risk/Reward 1:3:</strong> Only trade if potential gains are 3x larger than losses.</p><div class="callout warning"><div class="callout-title">⚠ Real Risk:</div><p>80% of traders lose money because they don\'t follow these rules.</p></div>' }
+            },
+            {
+                id: 'cap6', type: 'basic', number: 6,
+                title: { pt: 'Altcoins: Oportunidades e Riscos', en: 'Altcoins: Opportunities and Risks' },
+                subtitle: { pt: 'Além de Bitcoin', en: 'Beyond Bitcoin' },
+                content: { pt: '<h3>O Que é Altcoin?</h3><p>Qualquer criptomoeda que não seja Bitcoin. Exemplos: Ethereum, Solana, Cardano.</p><p><strong>Oportunidades:</strong> Potencial de 100x-1000x.</p><p><strong>Riscos:</strong> 99% das altcoins desaparecem.</p><div class="callout warning"><div class="callout-title">⚠ Aviso:</div><p>Não invistas em altcoins desconhecidas. Pesquisa whitepaper, team, roadmap.</p></div>', en: '<h3>What is Altcoin?</h3><p>Any cryptocurrency that isn\'t Bitcoin. Examples: Ethereum, Solana, Cardano.</p><p><strong>Opportunities:</strong> Potential for 100x-1000x returns.</p><p><strong>Risks:</strong> 99% of altcoins disappear.</p><div class="callout warning"><div class="callout-title">⚠ Warning:</div><p>Don\'t invest in unknown altcoins. Research whitepaper, team, roadmap.</p></div>' }
+            },
+            {
+                id: 'cap7', type: 'basic', number: 7,
+                title: { pt: 'DeFi (Finanças Descentralizadas)', en: 'DeFi (Decentralized Finance)' },
+                subtitle: { pt: 'O futuro das finanças', en: 'The future of finance' },
+                content: { pt: '<h3>O Que é DeFi?</h3><p>Finanças tradicionais, mas sem bancos. Podes emprestar, pedir emprestado, fazer yield farming.</p><p><strong>Exemplos:</strong> Uniswap (DEX), Aave (Lending), Curve (Stablecoins).</p><div class="callout success"><div class="callout-title">✓ Vantagem:</div><p>Yields altos (5-100% APY), sem intermediários, transparência total.</p></div><p><strong>Risco:</strong> Smart contracts podem ter bugs. Sempre auditados?</p>', en: '<h3>What is DeFi?</h3><p>Traditional finance, but without banks. You can lend, borrow, do yield farming.</p><p><strong>Examples:</strong> Uniswap (DEX), Aave (Lending), Curve (Stablecoins).</p><div class="callout success"><div class="callout-title">✓ Advantage:</div><p>High yields (5-100% APY), no intermediaries, total transparency.</p></div><p><strong>Risk:</strong> Smart contracts can have bugs. Always audited?</p>' }
+            },
+            {
+                id: 'cap8', type: 'basic', number: 8,
+                title: { pt: 'Fiscalidade em Portugal', en: 'Taxation in Portugal' },
+                subtitle: { pt: 'O que pagar ao Estado', en: 'What to pay to the State' },
+                content: { pt: '<h3>Impostos em Crypto (PT)</h3><p><strong>1. Mais-Valia:</strong> Se compras a €100 e vendes a €200, ganhos €100. Imposto: 28% sobre os ganhos (€28).</p><p><strong>2. Airdrops:</strong> Considerados rendimento. Imposto quando recebes.</p><p><strong>3. Staking/Yield:</strong> Considerado rendimento. Imposto imediato.</p><p><strong>4. DCA/Holding:</strong> Sem imposto se não venderes.</p><div class="callout warning"><div class="callout-title">⚠ Importante:</div><p>Documenta TUDO. Guarda recibos de compra/venda. A AT está a revistar crypto.</p></div>', en: '<h3>Crypto Taxes (PT)</h3><p><strong>1. Capital Gains:</strong> If you buy at €100 and sell at €200, gain is €100. Tax: 28% on gains (€28).</p><p><strong>2. Airdrops:</strong> Considered income. Tax when received.</p><p><strong>3. Staking/Yield:</strong> Considered income. Immediate tax.</p><p><strong>4. DCA/Holding:</strong> No tax if you don\'t sell.</p><div class="callout warning"><div class="callout-title">⚠ Important:</div><p>Document EVERYTHING. Keep receipts of purchases/sales. Portuguese Tax Authority is auditing crypto.</p></div>' }
+            },
+            {
+                id: 'cap9', type: 'basic', number: 9,
+                title: { pt: 'Estratégias de Investimento', en: 'Investment Strategies' },
+                subtitle: { pt: 'Como investir', en: 'How to invest' },
+                content: { pt: '<h3>4 Estratégias Principais</h3><p><strong>1. DCA (Dollar-Cost Averaging):</strong> Investe €100/mês regularmente. Reduz risco de timing.</p><p><strong>2. Lump Sum:</strong> Investe tudo de uma vez. Melhor se compras no fundo do mercado.</p><p><strong>3. 70/20/10:</strong> 70% em Bitcoin, 20% em Ethereum, 10% em altcoins.</p><p><strong>4. Hold & Compound:</strong> Compra e segura 4+ anos. Ciclos de mercado.</p><div class="callout success"><div class="callout-title">✓ Recomendação:</div><p>Para iniciantes: DCA. Investe €50-100/mês. Não penses no preço.</p></div>', en: '<h3>4 Main Strategies</h3><p><strong>1. DCA (Dollar-Cost Averaging):</strong> Invest €100/month regularly. Reduces timing risk.</p><p><strong>2. Lump Sum:</strong> Invest all at once. Better if you buy at market bottom.</p><p><strong>3. 70/20/10:</strong> 70% Bitcoin, 20% Ethereum, 10% altcoins.</p><p><strong>4. Hold & Compound:</strong> Buy and hold 4+ years. Market cycles.</p><div class="callout success"><div class="callout-title">✓ Recommendation:</div><p>For beginners: DCA. Invest €50-100/month. Don\'t think about price.</p></div>' }
+            },
+            {
+                id: 'cap10', type: 'basic', number: 10,
+                title: { pt: 'On-Chain Analytics', en: 'On-Chain Analytics' },
+                subtitle: { pt: 'Dados reais da blockchain', en: 'Real blockchain data' },
+                content: { pt: '<h3>3 Métricas Essenciais</h3><p><strong>1. Whale Movements:</strong> Se baleias (>100 BTC) movem fundos, é sinal importante.</p><p><strong>2. Exchange Flows:</strong> Saídas de exchanges = acumulação. Entradas = distribuição (venda).</p><p><strong>3. MVRV Ratio:</strong> Se >3, zona de lucro extremo. Se <1, zona de perda.</p><div class="example-box">Ferramenta: Glassnode, CryptoQuant, Nansen. Usa free tiers.</div>', en: '<h3>3 Essential Metrics</h3><p><strong>1. Whale Movements:</strong> If whales (>100 BTC) move funds, it\'s an important signal.</p><p><strong>2. Exchange Flows:</strong> Exchange withdrawals = accumulation. Inflows = distribution (selling).</p><p><strong>3. MVRV Ratio:</strong> If >3, extreme profit zone. If <1, loss zone.</p><div class="example-box">Tools: Glassnode, CryptoQuant, Nansen. Use free tiers.</div>' }
+            },
+            {
+                id: 'cap11', type: 'basic', number: 11,
+                title: { pt: 'Psicologia do Trader', en: 'Trader Psychology' },
+                subtitle: { pt: 'O factor humano', en: 'The human factor' },
+                content: { pt: '<h3>5 Erros Psicológicos Comuns</h3><p><strong>1. FOMO (Fear of Missing Out):</strong> Compras altos porque vês outros a ganhar.</p><p><strong>2. Panic Selling:</strong> Vendes no pior momento porque tens medo.</p><p><strong>3. Confirmation Bias:</strong> Só vês informação que confirma tua opinião.</p><p><strong>4. Overconfidence:</strong> Depois de ganho, arrisca demais.</p><p><strong>5. Loss Aversion:</strong> Relutância em aceitar pequenas perdas (deixa virar grandes).</p><div class="callout warning"><div class="callout-title">⚠ Solução:</div><p>Faz planos ANTES de emocionar-te. Stop-loss e take-profit automáticos.</p></div>', en: '<h3>5 Common Psychological Errors</h3><p><strong>1. FOMO (Fear of Missing Out):</strong> You buy high because you see others winning.</p><p><strong>2. Panic Selling:</strong> You sell at the worst moment because you\'re scared.</p><p><strong>3. Confirmation Bias:</strong> You only see information that confirms your opinion.</p><p><strong>4. Overconfidence:</strong> After a win, you risk too much.</p><p><strong>5. Loss Aversion:</strong> Reluctance to accept small losses (lets them become big).</p><div class="callout warning"><div class="callout-title">⚠ Solution:</div><p>Make plans BEFORE emotions. Automatic stop-loss and take-profit.</p></div>' }
+            },
+            {
+                id: 'cap12', type: 'basic', number: 12,
+                title: { pt: 'Notícias e Eventos Macro', en: 'News and Macro Events' },
+                subtitle: { pt: 'Que afeta o mercado', en: 'What affects the market' },
+                content: { pt: '<h3>Eventos Que Movem Mercado</h3><p><strong>1. Decisões do Banco Central (FED):</strong> Taxa de juro sobe = crypto cai. Taxa desce = crypto sobe.</p><p><strong>2. Aprovações de ETFs:</strong> Bitcoin Spot ETF aprovado = grande volume e alta.</p><p><strong>3. Halvings:</strong> A cada 4 anos, recompensa de mining é reduzida. Historicamente = bull market.</p><p><strong>4. Regulação:</strong> Notícia de ban = crash. Notícia de regulação positiva = pump.</p><div class="callout success"><div class="callout-title">✓ Dica:</div><p>Segue calendário económico. CoinTelegraph, The Block, Cryptofees.</p></div>', en: '<h3>Events That Move the Market</h3><p><strong>1. Central Bank Decisions (FED):</strong> Interest rate up = crypto down. Rate down = crypto up.</p><p><strong>2. ETF Approvals:</strong> Bitcoin Spot ETF approved = big volume and pump.</p><p><strong>3. Halvings:</strong> Every 4 years, mining reward is halved. Historically = bull market.</p><p><strong>4. Regulation:</strong> Ban news = crash. Positive regulation news = pump.</p><div class="callout success"><div class="callout-title">✓ Tip:</div><p>Follow economic calendar. CoinTelegraph, The Block, Cryptofees.</p></div>' }
+            },
+            {
+                id: 'cap13', type: 'basic', number: 13,
+                title: { pt: 'Comunidade e Redes', en: 'Community and Networks' },
+                subtitle: { pt: 'O poder da comunidade', en: 'The power of community' },
+                content: { pt: '<h3>Onde Aprender</h3><p><strong>1. Discord:</strong> Comunidades privadas. Análises em tempo real, debates.</p><p><strong>2. Twitter/X:</strong> Analysts, news, trends. Segue gente respeitável (verificados).</p><p><strong>3. YouTube:</strong> Educação grátis. Mas cuidado com shillers (promotores de moedas).</p><p><strong>4. Podcasts:</strong> Bankless, Unchained, The Pomp Podcast.</p><div class="callout success"><div class="callout-title">✓ Genesis Discord:</div><p>Junta-te ao nosso servidor para análises, airdrops, eventos.</p></div>', en: '<h3>Where to Learn</h3><p><strong>1. Discord:</strong> Private communities. Real-time analysis, debates.</p><p><strong>2. Twitter/X:</strong> Analysts, news, trends. Follow reputable people (verified).</p><p><strong>3. YouTube:</strong> Free education. But be careful of shillers.</p><p><strong>4. Podcasts:</strong> Bankless, Unchained, The Pomp Podcast.</p><div class="callout success"><div class="callout-title">✓ Genesis Discord:</div><p>Join our server for analysis, airdrops, events.</p></div>' }
+            },
+
+            // MÓDULOS AVANÇADOS
+            {
+                id: 'adv1-smart-contracts', type: 'advanced', number: 14,
+                title: { pt: 'Smart Contracts: O Código é Lei', en: 'Smart Contracts: Code is Law' },
+                subtitle: { pt: 'Automatizar finanças', en: 'Automate finance' },
+                content: { pt: '<h3>O Que é um Smart Contract?</h3><p>Um programa de computador que corre na blockchain. Quando condições são cumpridas, executa automaticamente.</p><p><strong>Exemplo:</strong> "Se o preço de Bitcoin atingir €50.000, venda automaticamente meus 0.5 BTC".</p><p><strong>Linguagem:</strong> Solidity (Ethereum), Rust (Solana).</p><div class="callout warning"><div class="callout-title">⚠ Risco:</div><p>Smart contracts podem ter bugs (vulnerabilidades). Sempre verifica se foi auditado.</p></div><p><strong>Ferramentas para começar:</strong> Remix IDE (web), Hardhat (local).</p>', en: '<h3>What is a Smart Contract?</h3><p>A computer program that runs on the blockchain. When conditions are met, it executes automatically.</p><p><strong>Example:</strong> "If Bitcoin price reaches €50,000, automatically sell my 0.5 BTC".</p><p><strong>Language:</strong> Solidity (Ethereum), Rust (Solana).</p><div class="callout warning"><div class="callout-title">⚠ Risk:</div><p>Smart contracts can have bugs (vulnerabilities). Always check if it was audited.</p></div><p><strong>Tools to start:</strong> Remix IDE (web), Hardhat (local).</p>' }
+            },
+            {
+                id: 'adv2-yield-farming', type: 'advanced', number: 15,
+                title: { pt: 'Yield Farming: Ganhar Passivamente', en: 'Yield Farming: Earn Passively' },
+                subtitle: { pt: 'APY, APR, e riscos', en: 'APY, APR, and risks' },
+                content: { pt: '<h3>Yield Farming 101</h3><p>Colocas teus tokens numa pool de liquidez. Receives fees + rewards. APY de 10-1000%!</p><p><strong>Tipos:</strong></p><p>1. <strong>Liquidity Mining:</strong> Provides liquidity (2 tokens em igual valor). Recebes % das trades.</p><p>2. <strong>Staking:</strong> Lockup teus tokens. Recebes rewards por validar rede.</p><p>3. <strong>Lending:</strong> Empresta tokens. Recebes juro (ex: Aave, Compound).</p><div class="callout warning"><div class="callout-title">⚠ Impermanent Loss:</div><p>Se preços divergem entre os 2 tokens, perdes dinheiro mesmo que APY seja alto.</p></div><p><strong>Exemplo real:</strong> Coloca €1000 (€500 BTC + €500 ETH). Se BTC sobe 50% e ETH fica igual, pode ter €950 (perda mesmo com APY).</p>', en: '<h3>Yield Farming 101</h3><p>You put your tokens in a liquidity pool. You receive fees + rewards. APY of 10-1000%!</p><p><strong>Types:</strong></p><p>1. <strong>Liquidity Mining:</strong> Provide liquidity (2 tokens in equal value). Receive % of trades.</p><p>2. <strong>Staking:</strong> Lock your tokens. Receive rewards for validating network.</p><p>3. <strong>Lending:</strong> Lend tokens. Receive interest (e.g., Aave, Compound).</p><div class="callout warning"><div class="callout-title">⚠ Impermanent Loss:</div><p>If prices diverge between the 2 tokens, you lose money even if APY is high.</p></div><p><strong>Real example:</strong> Put €1000 (€500 BTC + €500 ETH). If BTC rises 50% and ETH stays same, might have €950 (loss even with APY).</p>' }
+            },
+            {
+                id: 'adv3-nfts', type: 'advanced', number: 16,
+                title: { pt: 'NFTs: Ativos Digitais Únicos', en: 'NFTs: Unique Digital Assets' },
+                subtitle: { pt: 'O hype e a realidade', en: 'The hype and reality' },
+                content: { pt: '<h3>O Que é um NFT?</h3><p>Um token não-fungível. Cada um é único (diferente do Bitcoin, que são todos iguais).</p><p><strong>Casos de Uso Real:</strong></p><p>1. <strong>Arte Digital:</strong> Artistas ganham royalties cada vez que NFT é vendido (5-10%).</p><p>2. <strong>Gaming:</strong> Propriedade real de items (não perdes se jogo fecha).</p><p>3. <strong>Memberships:</strong> Acesso a comunidades, eventos, conteúdo exclusivo.</p><div class="callout warning"><div class="callout-title">⚠ Aviso:</div><p>99% dos NFTs são scams ou projectos mortos. Se vires "NFT collection" que promete 10000% gains, é 100% scam.</p></div><p><strong>Ferramentas:</strong> OpenSea (marketplace), Blur (profissional).</p>', en: '<h3>What is an NFT?</h3><p>A non-fungible token. Each one is unique (unlike Bitcoin, which are all the same).</p><p><strong>Real Use Cases:</strong></p><p>1. <strong>Digital Art:</strong> Artists earn royalties every time NFT is sold (5-10%).</p><p>2. <strong>Gaming:</strong> Real ownership of items (you don\'t lose if game closes).</p><p>3. <strong>Memberships:</strong> Access to communities, events, exclusive content.</p><div class="callout warning"><div class="callout-title">⚠ Warning:</div><p>99% of NFTs are scams or dead projects. If you see "NFT collection" promising 10000% gains, it\'s 100% scam.</p></div><p><strong>Tools:</strong> OpenSea (marketplace), Blur (professional).</p>' }
+            },
+            {
+                id: 'adv4-airdrops', type: 'advanced', number: 17,
+                title: { pt: 'Guia Completo de Airdrops', en: 'Complete Airdrop Guide' },
+                subtitle: { pt: 'Como ganhar tokens grátis', en: 'How to earn free tokens' },
+                content: { pt: '<h3>O Que é um Airdrop?</h3><p>Uma distribuição gratuita de tokens de criptomoeda a utilizadores que cumprem certos critérios. Não é um presente aleatório — é uma estratégia de marketing que projectos usam para distribuir tokens inicialmente, recompensar early adopters, gerar buzz e aumentar uso.</p><p><strong>Tipos de Airdrops:</strong></p><p><strong>1. Airdrop Simples:</strong> Qualquer um que tenha uma wallet recebe tokens.</p><p><strong>2. Airdrop Condicional:</strong> Precisas cumprir tarefas (fazer follow, retweet, usar protocolo).</p><p><strong>3. Airdrop Snapshot:</strong> Tiram "foto" de quem tem tokens numa data específica.</p><p><strong>4. Airdrop com Holding:</strong> Precisas manter tokens bloqueados por período.</p><p><strong>Casos de Sucesso Reais:</strong></p><p><strong>Uniswap (2020):</strong> Airdrop de 400 tokens. Hoje valem €1000+. Quem recebeu e vendeu faz 150.000% de ganho.</p><p><strong>Arbitrum (2023):</strong> Airdrop de 4075 tokens. Hoje valem €3000+. Ganho: 300.000%.</p><p><strong>Como Participar (Passo a Passo):</strong></p><p><strong>Passo 1: Identifica Airdrops Legítimos</strong></p><p>Não cliques em links aleatórios. Verifica:</p><ul><li>Site oficial do projecto (não links de redes sociais)</li><li>Twitter/X verificado (badge azul ✓)</li><li>Comunidade no Discord com membros ativos</li><li>Whitepaper ou documentação séria</li></ul><div class="callout warning"><div class="callout-title">⚠ Aviso: Scams</div><p>"Conecta a tua wallet e ganha 1000 tokens grátis!" — Fake. Ninguém pede acesso à tua wallet para te dar algo. Se pedem, é scam 100%.</p></div><p><strong>Passo 2: Prepara a Tua Wallet</strong></p><p>Cria uma wallet separada para airdrops (não a principal com muitos fundos). Usa:</p><ul><li>MetaMask (Ethereum, Polygon, etc)</li><li>Trust Wallet (multi-chain)</li><li>Ledger (hardware wallet — mais seguro)</li></ul><p><strong>Passo 3: Cumpre os Requisitos</strong></p><p>Se pede para fazer follow, retweet, usar protocolo — faz. Cada projecto tem critérios diferentes.</p><div class="example-box">Exemplo de requisitos típicos:<br>- Ter wallet criada há mais de 1 mês<br>- Ter saldo mínimo (ex: €10 em cripto)<br>- Fazer 1+ transação no protocolo<br>- Follow no Twitter<br>- Membro ativo do Discord</div><p><strong>Passo 4: Aguarda a Distribuição</strong></p><p>Airdrops são distribuídos em "waves" (ondas). Pode levar semanas ou meses. Alguns projectos anunciam data, outros surpreendem.</p><p><strong>Passo 5: Recebe os Tokens</strong></p><p>Tokens aparecem na tua wallet automaticamente. Não precisas fazer nada — apenas aparecem.</p><p><strong>Por Que São Bons? (5 Razões)</strong></p><p><strong>1. Dinheiro Grátis:</strong> Ganhas tokens sem investir (se fores early).</p><p><strong>2. Baixo Risco:</strong> Não investes capital inicial.</p><p><strong>3. Descobrir Projectos Novos:</strong> Conheces tecnologia inovadora cedo.</p><p><strong>4. Potencial de 100x-1000x:</strong> Se o projecto cresce, tokens valem muito mais.</p><p><strong>5. Educação:</strong> Aprendes como protocolos funcionam participando.</p><p><strong>Riscos e Como Evitá-los</strong></p><p><strong>Risco 1: Scams/Phishing</strong></p><ul><li>❌ Site fake que pede a tua seed phrase</li><li>❌ Smart contract maligno que rouba tokens</li><li>✅ Usa sempre sites oficiais (verifica URL)</li><li>✅ Nunca conectes a wallet em sites desconhecidos</li></ul><p><strong>Risco 2: Esperança Falsa</strong></p><ul><li>❌ Nem todos os airdrops valem algo no futuro</li><li>✅ Pesquisa o projecto antes (whitepaper, team, roadmap)</li></ul><p><strong>Risco 3: Impostos</strong></p><ul><li>Airdrops em Portugal são considerados "rendimento" — tens de pagar IRS</li><li>Se venderes depois (mais-valia) pagas novamente IRS</li><li>✅ Documenta tudo para o imposto</li></ul><p><strong>Risco 4: Timing do Mercado</strong></p><ul><li>❌ Tokens podem cair 90% após airdrop (distribuição em massa = venda)</li><li>✅ Não vendas no pico — aguarda estabilização</li></ul><p><strong>Checklist Antes de Participar</strong></p><div class="example-box">☐ Projecto tem website oficial?<br>☐ Twitter/X está verificado?<br>☐ Whitepaper ou roadmap claro?<br>☐ Discord/Telegram com comunidade ativa?<br>☐ Equipa com histórico (fundadores conhecidos)?<br>☐ Não pede a seed phrase?<br>☐ Não pede dinheiro para participar?<br>☐ Wallet segura preparada?<br>☐ Documentei para imposto (PT)?</div><p><strong>Estratégia Avançada: Farming Airdrops</strong></p><p>Alguns investidores "farm" airdrops — participam em múltiplos projectos ao mesmo tempo para maximizar ganhos.</p><p><strong>Como?</strong></p><ol><li>Identifica 10-20 projectos em fase de airdrop</li><li>Cumpre requisitos de cada um (baixo esforço)</li><li>Espera distribuição (pode levar meses)</li><li>Se X% deles valem algo, ganhas</li></ol><div class="callout"><div class="callout-title">Exemplo Real</div><p>Participas em 10 airdrops. Cada um dá ~€50 em tokens. Se vários crescem, tens €500-5000 ganhos. Investimento: 2-3h de tempo, 0€.</p></div><p><strong>Recursos Úteis</strong></p><ul><li><strong>Airdrop.io:</strong> Calendário de airdrops</li><li><strong>DefiLlama:</strong> Projectos DeFi com airdrops</li><li><strong>Twitter #airdrop:</strong> Anúncios em tempo real</li><li><strong>Discord de Projectos:</strong> Oficial, verificado</li></ul>', en: '<h3>What is an Airdrop?</h3><p>A free distribution of cryptocurrency tokens to users who meet certain criteria. It\'s not a random gift — it\'s a marketing strategy projects use to distribute tokens, reward early adopters, generate buzz, and increase usage.</p><p><strong>Types of Airdrops:</strong></p><p><strong>1. Simple Airdrop:</strong> Anyone with a wallet receives tokens.</p><p><strong>2. Conditional Airdrop:</strong> You must complete tasks (follow, retweet, use protocol).</p><p><strong>3. Snapshot Airdrop:</strong> They take a "photo" of who holds tokens on a specific date.</p><p><strong>4. Holding Airdrop:</strong> You must keep tokens locked for a period.</p><p><strong>Real Success Stories:</strong></p><p><strong>Uniswap (2020):</strong> 400 token airdrop. Today worth €1000+. 150,000% gain.</p><p><strong>Arbitrum (2023):</strong> 4075 tokens. Today worth €3000+. 300,000% gain.</p><p><strong>How to Participate (Step by Step):</strong></p><p><strong>Step 1: Identify Legitimate Airdrops</strong></p><p>Don\'t click random links. Verify:</p><ul><li>Official project website (not social media links)</li><li>Verified Twitter/X (blue badge ✓)</li><li>Discord/Telegram with active community</li><li>Serious whitepaper or documentation</li></ul><div class="callout warning"><div class="callout-title">⚠ Warning: Scams</div><p>"Connect your wallet and earn 1000 free tokens!" — Fake. No one asks for wallet access to give you something. If they do, it\'s 100% scam.</p></div><p><strong>Step 2: Prepare Your Wallet</strong></p><p>Create a separate wallet for airdrops (not your main wallet with lots of funds). Use:</p><ul><li>MetaMask (Ethereum, Polygon, etc)</li><li>Trust Wallet (multi-chain)</li><li>Ledger (hardware wallet — more secure)</li></ul><p><strong>Step 3: Complete Requirements</strong></p><p>If it asks you to follow, retweet, use the protocol — do it. Each project has different criteria.</p><div class="example-box">Example of typical requirements:<br>- Wallet created more than 1 month ago<br>- Minimum balance (e.g., €10 in crypto)<br>- Make 1+ transaction on the protocol<br>- Follow on Twitter<br>- Active Discord member</div><p><strong>Step 4: Wait for Distribution</strong></p><p>Airdrops are distributed in "waves". Can take weeks or months. Some projects announce the date, others surprise you.</p><p><strong>Step 5: Receive Tokens</strong></p><p>Tokens appear in your wallet automatically. You don\'t need to do anything — they just appear.</p><p><strong>Why Are They Good? (5 Reasons)</strong></p><p><strong>1. Free Money:</strong> You earn tokens without investing (if you\'re early).</p><p><strong>2. Low Risk:</strong> No initial capital required.</p><p><strong>3. Discover New Projects:</strong> Learn about innovative technology early.</p><p><strong>4. Huge Upside Potential:</strong> 100x-1000x gains if project grows.</p><p><strong>5. Education:</strong> Learn how protocols work by participating.</p><p><strong>Risks and How to Avoid Them</strong></p><p><strong>Risk 1: Scams/Phishing</strong></p><ul><li>❌ Fake website asking for seed phrase</li><li>❌ Malicious smart contract stealing tokens</li><li>✅ Always use official sites (check URL)</li><li>✅ Never connect wallet on unknown sites</li></ul><p><strong>Risk 2: False Hope</strong></p><ul><li>❌ Not all airdrops become valuable</li><li>✅ Research project first (whitepaper, team, roadmap)</li></ul><p><strong>Risk 3: Taxes</strong></p><ul><li>Airdrops are taxable income in most countries</li><li>If you sell later (capital gains) you pay again</li><li>✅ Document everything for taxes</li></ul><p><strong>Risk 4: Market Timing</strong></p><ul><li>❌ Tokens can fall 90% after a        body.dark-mode .hamburger span { background-color: var(--color-text-dark); }
 
         .container { display: grid; grid-template-columns: 280px 1fr; margin-top: 80px; min-height: calc(100vh - 80px); }
         .sidebar { background-color: var(--color-bg-light-secondary); border-right: 1px solid var(--color-border-light); padding: var(--spacing-lg); overflow-y: auto; position: sticky; top: 80px; height: calc(100vh - 80px); }
