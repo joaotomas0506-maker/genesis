@@ -9,8 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
@@ -47,11 +46,25 @@
 
         header { position: fixed; top: 0; width: 100%; height: 80px; background-color: var(--color-bg-light); border-bottom: 1px solid var(--color-border-light); display: flex; justify-content: space-between; align-items: center; padding: 0 var(--spacing-lg); z-index: 1000; }
         body.dark-mode header { background-color: var(--color-bg-dark-secondary); border-bottom-color: var(--color-border-dark); }
-        .navbar-logo { font-family: var(--font-family-display); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); text-decoration: none; }
+        
+        .navbar-logo { 
+            font-family: var(--font-family-display); 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: var(--color-primary); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        
+        .navbar-logo svg { width: 32px; height: 32px; }
+        
         .navbar-links { display: flex; gap: var(--spacing-xl); list-style: none; }
         .navbar-links a { text-decoration: none; color: var(--color-text-light); font-weight: 500; }
         body.dark-mode .navbar-links a { color: var(--color-text-dark); }
         .navbar-links a:hover { color: var(--color-primary); }
+        
         .navbar-controls { display: flex; gap: var(--spacing-md); align-items: center; }
         .language-toggle { display: flex; gap: 0.5rem; background-color: var(--color-bg-light-secondary); padding: 0.4rem; border-radius: 8px; border: none; }
         body.dark-mode .language-toggle { background-color: var(--color-bg-dark); }
@@ -79,71 +92,60 @@
         .code-submit { width: 100%; padding: 0.8rem; background-color: var(--color-primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
         .code-submit:hover { background-color: var(--color-primary-dark); }
 
-        .briefing-container { display: none; }
-        .briefing-container.active { display: block; }
+        #briefing-content { display: none; }
+        #briefing-content.active { display: block; }
 
-        .briefing-header { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); color: white; padding: var(--spacing-xl); border-radius: 12px; margin-bottom: var(--spacing-xl); text-align: center; }
+        .briefing-header { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); color: white; padding: var(--spacing-xl); border-radius: 12px; margin-bottom: var(--spacing-xl); }
         .briefing-date { font-size: 0.9rem; opacity: 0.9; }
         .briefing-title { font-size: 2rem; font-weight: 800; margin: var(--spacing-md) 0; }
 
-        .briefing-section { background-color: var(--color-bg-light); border: 1px solid var(--color-border-light); border-radius: 12px; padding: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
+        .briefing-section { background-color: var(--color-bg-light); border: 1px solid var(--color-border-light); border-radius: 12px; padding: var(--spacing-xl); margin-bottom: var(--spacing-xl); }
         body.dark-mode .briefing-section { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
 
-        .section-title { font-family: var(--font-family-display); font-size: 1.3rem; font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-sm); }
-        .section-icon { font-size: 1.5rem; }
+        .section-title { display: flex; align-items: center; gap: var(--spacing-sm); font-size: 1.3rem; font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-lg); }
+        .section-icon { font-size: 1.8rem; }
 
-        .section-content { color: var(--color-text-light-secondary); line-height: 1.8; }
-        body.dark-mode .section-content { color: var(--color-text-dark-secondary); }
-
-        .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md); margin-top: var(--spacing-md); }
-        .price-card { background-color: var(--color-bg-light-secondary); padding: var(--spacing-md); border-radius: 8px; border-left: 3px solid var(--color-primary); }
+        .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg); margin: var(--spacing-lg) 0; }
+        .price-card { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; border-left: 4px solid var(--color-primary); }
         body.dark-mode .price-card { background-color: var(--color-bg-dark); }
-
-        .price-symbol { font-weight: 700; color: var(--color-primary); }
-        .price-value { font-size: 1.3rem; margin: var(--spacing-sm) 0; }
-        .price-change { font-size: 0.9rem; }
+        .price-card h4 { color: var(--color-primary); margin-bottom: var(--spacing-sm); }
+        .price-value { font-size: 1.8rem; font-weight: 800; color: var(--color-primary); }
+        .price-change { font-size: 0.9rem; margin-top: 0.5rem; }
         .price-change.positive { color: var(--color-success); }
         .price-change.negative { color: var(--color-danger); }
 
-        .portfolio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-top: var(--spacing-md); }
-        .portfolio-item { background-color: var(--color-bg-light-secondary); padding: var(--spacing-md); border-radius: 8px; }
-        body.dark-mode .portfolio-item { background-color: var(--color-bg-dark); }
+        .alert-box { padding: var(--spacing-lg); border-radius: 8px; margin: var(--spacing-md) 0; border-left: 4px solid; }
+        .alert-box.success { background-color: rgba(46, 204, 113, 0.1); border-left-color: var(--color-success); }
+        .alert-box.warning { background-color: rgba(243, 156, 18, 0.1); border-left-color: var(--color-warning); }
+        .alert-box.danger { background-color: rgba(231, 76, 60, 0.1); border-left-color: var(--color-danger); }
 
-        .portfolio-name { font-weight: 600; margin-bottom: var(--spacing-sm); }
-        .portfolio-bar { width: 100%; height: 8px; background-color: var(--color-border-light); border-radius: 4px; overflow: hidden; }
-        body.dark-mode .portfolio-bar { background-color: var(--color-border-dark); }
-        .portfolio-fill { height: 100%; background-color: var(--color-primary); }
-        .portfolio-percentage { font-size: 0.85rem; margin-top: var(--spacing-sm); color: var(--color-text-light-secondary); }
+        .example-box { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; border-left: 4px solid var(--color-primary); margin: var(--spacing-md) 0; }
+        body.dark-mode .example-box { background-color: var(--color-bg-dark); }
 
-        .alert-box { padding: var(--spacing-lg); border-radius: 8px; margin-bottom: var(--spacing-md); border-left: 4px solid; }
-        .alert-box.warning { background-color: rgba(243, 156, 18, 0.1); border-left-color: var(--color-warning); color: var(--color-warning); }
-        .alert-box.danger { background-color: rgba(231, 76, 60, 0.1); border-left-color: var(--color-danger); color: var(--color-danger); }
-        .alert-box.success { background-color: rgba(46, 204, 113, 0.1); border-left-color: var(--color-success); color: var(--color-success); }
-
-        .action-plan { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; margin-top: var(--spacing-md); }
-        body.dark-mode .action-plan { background-color: var(--color-bg-dark); }
-        .action-plan h4 { color: var(--color-primary); margin-bottom: var(--spacing-md); }
-        .action-plan ul { list-style: none; padding-left: var(--spacing-md); }
-        .action-plan li { margin-bottom: var(--spacing-sm); padding-left: 1.5rem; position: relative; }
-        .action-plan li::before { content: '→'; position: absolute; left: 0; color: var(--color-primary); font-weight: 700; }
-
-        .chart-container { position: relative; height: 300px; margin-top: var(--spacing-lg); }
-
-        .footer-disclaimer { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; margin-top: var(--spacing-xl); border-left: 3px solid var(--color-warning); }
-        body.dark-mode .footer-disclaimer { background-color: var(--color-bg-dark); }
+        footer { background-color: var(--color-bg-light); border-top: 1px solid var(--color-border-light); padding: var(--spacing-xl) var(--spacing-lg); text-align: center; color: var(--color-text-light-secondary); margin-top: var(--spacing-xxl); }
+        body.dark-mode footer { background-color: var(--color-bg-dark-secondary); border-top-color: var(--color-border-dark); }
 
         @media (max-width: 768px) {
             .navbar-links { display: none; }
             .hamburger { display: flex; }
             .price-grid { grid-template-columns: 1fr; }
-            .portfolio-grid { grid-template-columns: 1fr; }
-            .main-content { padding: var(--spacing-lg) var(--spacing-md); }
         }
     </style>
 </head>
 <body>
     <header>
-        <a href="index.html" class="navbar-logo">GENESIS</a>
+        <a href="index.html" class="navbar-logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="10" height="10" stroke="#1565C0" stroke-width="2" fill="none" rx="2"/>
+                <rect x="18" y="4" width="10" height="10" stroke="#1565C0" stroke-width="2" fill="none" rx="2"/>
+                <rect x="4" y="18" width="10" height="10" stroke="#1565C0" stroke-width="2" fill="none" rx="2"/>
+                <rect x="18" y="18" width="10" height="10" stroke="#1E88E5" stroke-width="2" fill="#1E88E5" rx="2"/>
+                <line x1="14" y1="9" x2="18" y2="9" stroke="#1565C0" stroke-width="1.5"/>
+                <line x1="9" y1="14" x2="9" y2="18" stroke="#1565C0" stroke-width="1.5"/>
+                <line x1="23" y1="14" x2="23" y2="18" stroke="#1E88E5" stroke-width="1.5"/>
+            </svg>
+            GENESIS
+        </a>
         <nav class="navbar-links">
             <a href="index.html">Voltar</a>
             <a href="genesis-vault.html">Vault</a>
@@ -164,33 +166,35 @@
             <p>Briefing diário de 15 minutos: análise macro, contexto PT, 20 ativos, on-chain, alertas e plano de ação.</p>
             <div class="code-input-section">
                 <label style="font-weight: 600; margin-bottom: var(--spacing-sm); display: block;">Introduz o teu código de acesso</label>
-                <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-md);">Formato: GS-XXXX-PT (maiúsculas)</div>
-                <input type="text" class="code-input" id="signal-code" placeholder="GS-XXXX-PT" maxlength="20">
+                <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-md);">Formato: GS-XXXX-2026 (maiúsculas)</div>
+                <input type="text" class="code-input" id="signal-code" placeholder="GS-XXXX-2026" maxlength="20">
                 <div class="code-error" id="code-error"></div>
                 <button class="code-submit">Validar Código</button>
             </div>
             <div style="margin-top: var(--spacing-xl); color: var(--color-text-light-secondary); font-size: 0.9rem;">
-                <p>Não tens código? Subscreve agora:</p>
-                <p><a href="https://wa.me/351000000000" target="_blank" style="color: var(--color-primary); text-decoration: none;">WhatsApp (€15/mês)</a></p>
+                <p>Não tens código? <a href="index.html" style="color: var(--color-primary); text-decoration: none;">Subscreve o Signal aqui</a></p>
             </div>
         </div>
 
-        <div id="briefing-content" class="briefing-container">
+        <div id="briefing-content" class="briefing-content">
             <div class="briefing-header">
-                <div class="briefing-date" id="briefing-date">06 de Abril de 2026</div>
-                <div class="briefing-title">Genesis Signal — Briefing Diário</div>
+                <div class="briefing-date" id="briefing-date"></div>
+                <div class="briefing-title">Genesis Signal</div>
             </div>
 
             <!-- SEÇÃO 1: CONTEXTO MACRO -->
             <div class="briefing-section">
                 <div class="section-title">
                     <span class="section-icon">🌍</span>
-                    <span>Contexto Macro Global</span>
+                    <span>Contexto Macro</span>
                 </div>
                 <div class="section-content">
-                    <p><strong>Taxa de Juro (FED):</strong> Mantida em 5.25-5.50%. Inflação em 3.2% (YoY). Expectativa: Possível corte em Junho se tendência continuar.</p>
-                    <p><strong>Mercado Tradicional:</strong> S&P 500 em alta. Índice de sentimento (+2.3%). Fluxos para ativos de risco aumentaram.</p>
-                    <p><strong>Portugal:</strong> Economia estável. Turismo forte. Confiança de consumidor em 52 pontos (ligeira melhoria).</p>
+                    <ul style="color: var(--color-text-light-secondary); line-height: 2;">
+                        <li><strong>Taxa de Juro (FED):</strong> Mantida em 5.25-5.50%</li>
+                        <li><strong>Inflação:</strong> 3.2% YoY</li>
+                        <li><strong>Expectativa:</strong> Possível corte em Junho</li>
+                        <li><strong>Contexto PT:</strong> Banco de Portugal acompanha FED</li>
+                    </ul>
                 </div>
             </div>
 
@@ -198,13 +202,9 @@
             <div class="briefing-section">
                 <div class="section-title">
                     <span class="section-icon">📊</span>
-                    <span>20 Ativos Principais</span>
+                    <span>Preços em Tempo Real (Top 20)</span>
                 </div>
-                <div class="section-content">
-                    <div class="price-grid" id="price-grid">
-                        <!-- Preenchido por JavaScript -->
-                    </div>
-                </div>
+                <div id="price-grid" class="price-grid"></div>
             </div>
 
             <!-- SEÇÃO 3: ANÁLISE TÉCNICA -->
@@ -214,183 +214,242 @@
                     <span>Análise Técnica</span>
                 </div>
                 <div class="section-content">
-                    <p><strong>Bitcoin (BTC):</strong> Cotação: €42.500. Acima da MM200 (€41.200). Suporte em €40.800. Resistência em €43.500. Sinal: BULLISH.</p>
-                    <p><strong>Ethereum (ETH):</strong> Cotação: €2.200. Consolidando acima de €2.150. RSI em 55 (neutro). Sinal: AGUARDANDO CONFIRMAÇÃO.</p>
-                    <p><strong>Altcoins:</strong> Solana (+5.4%), Polkadot (+2.1%), Cardano (-0.8%). Índice MVRV de ETH em 1.45 (zona de lucro).</p>
+                    <p style="margin-bottom: var(--spacing-md);"><strong>Bitcoin Análise:</strong></p>
+                    <ul style="color: var(--color-text-light-secondary); line-height: 2; margin-bottom: var(--spacing-lg);">
+                        <li><strong>Preço:</strong> €42.500</li>
+                        <li><strong>MM200:</strong> €41.200 (Bullish)</li>
+                        <li><strong>Suporte:</strong> €40.800</li>
+                        <li><strong>Resistência:</strong> €43.500</li>
+                        <li><strong>RSI:</strong> 65 (Neutral)</li>
+                        <li><strong>Sinal:</strong> <span style="color: var(--color-success); font-weight: 700;">BULLISH</span></li>
+                    </ul>
+
+                    <p style="margin-bottom: var(--spacing-md);"><strong>Ethereum Análise:</strong></p>
+                    <ul style="color: var(--color-text-light-secondary); line-height: 2;">
+                        <li><strong>Preço:</strong> €2.200</li>
+                        <li><strong>Suporte:</strong> €2.100</li>
+                        <li><strong>Resistência:</strong> €2.400</li>
+                        <li><strong>Sinal:</strong> <span style="color: var(--color-warning); font-weight: 700;">NEUTRAL</span></li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- SEÇÃO 4: PORTEFÓLIO DE REFERÊNCIA -->
-            <div class="briefing-section">
-                <div class="section-title">
-                    <span class="section-icon">💼</span>
-                    <span>Portefólio de Referência (Genesis Balanced)</span>
-                </div>
-                <div class="section-content">
-                    <p style="margin-bottom: var(--spacing-lg);"><strong>Alocação Sugerida para €1000:</strong></p>
-                    <div class="portfolio-grid">
-                        <div class="portfolio-item">
-                            <div class="portfolio-name">Cofre (60%) — €600</div>
-                            <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-sm);">BTC 40% | ETH 20%</div>
-                            <div class="portfolio-bar">
-                                <div class="portfolio-fill" style="width: 100%;"></div>
-                            </div>
-                            <div class="portfolio-percentage">Segurança & Estabilidade</div>
-                        </div>
-                        <div class="portfolio-item">
-                            <div class="portfolio-name">Motor (30%) — €300</div>
-                            <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-sm);">Altcoins com tese</div>
-                            <div class="portfolio-bar">
-                                <div class="portfolio-fill" style="width: 100%; background-color: var(--color-primary-light);"></div>
-                            </div>
-                            <div class="portfolio-percentage">Crescimento & Oportunidade</div>
-                        </div>
-                        <div class="portfolio-item">
-                            <div class="portfolio-name">Exploração (10%) — €100</div>
-                            <div style="font-size: 0.85rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-sm);">Airdrops & Especulação</div>
-                            <div class="portfolio-bar">
-                                <div class="portfolio-fill" style="width: 100%; background-color: var(--color-warning);"></div>
-                            </div>
-                            <div class="portfolio-percentage">Risco Controlado</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SEÇÃO 5: ON-CHAIN ANALYTICS -->
+            <!-- SEÇÃO 4: ON-CHAIN -->
             <div class="briefing-section">
                 <div class="section-title">
                     <span class="section-icon">⛓️</span>
-                    <span>On-Chain Analytics</span>
+                    <span>On-Chain Analysis</span>
                 </div>
                 <div class="section-content">
-                    <p><strong>Fluxos de Exchanges:</strong> Saídas de BTC de €120M. Sinal BULLISH (acumulação).</p>
-                    <p><strong>Detentores de Longo Prazo:</strong> Aumentaram 2.3% esta semana. Confiança elevada.</p>
-                    <p><strong>SOPR Ratio:</strong> 1.08 (zona de euforia). Atenção: Possível consolidação próxima.</p>
+                    <ul style="color: var(--color-text-light-secondary); line-height: 2;">
+                        <li><strong>Whale Movements:</strong> 3 transações de baleias (>100 BTC) na última hora</li>
+                        <li><strong>Exchange Flows:</strong> Mais saídas que entradas (bullish)</li>
+                        <li><strong>MVRV Ratio:</strong> 2.5 (zona de lucro, mas não extrema)</li>
+                        <li><strong>Fear & Greed Index:</strong> 68 (Greed, cuidado com reversão)</li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- SEÇÃO 6: ALERTAS -->
+            <!-- SEÇÃO 5: AIRDROPS DO MOMENTO -->
             <div class="briefing-section">
                 <div class="section-title">
-                    <span class="section-icon">🚨</span>
-                    <span>Alertas Estruturados</span>
+                    <span class="section-icon">🎁</span>
+                    <span>Airdrops do Momento</span>
                 </div>
                 <div class="section-content">
-                    <div class="alert-box success">
-                        <strong>✓ OPORTUNIDADE:</strong> BTC em consolidação acima de MM200. Se romper €43.500, alvo próximo €45.000.
-                    </div>
-                    <div class="alert-box warning">
-                        <strong>⚠ ATENÇÃO:</strong> SOPR em zona elevada. Possível pullback curto prazo. Aguarda confirmação.
-                    </div>
-                    <div class="alert-box warning">
-                        <strong>⚠ NOTÍCIA:</strong> Regulação SEC sobre ETFs de crypto em discussão. Aguarda resultado.
+                    <p style="margin-bottom: var(--spacing-lg);"><strong>Airdrops Ativos Esta Semana:</strong></p>
+                    
+                    <div style="display: grid; gap: var(--spacing-lg);">
+                        <!-- Airdrop 1 -->
+                        <div style="background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; border-left: 3px solid var(--color-primary);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
+                                <div>
+                                    <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">🌟 LayerZero (ZRO) - Airdrop Continuado</h4>
+                                    <p style="font-size: 0.9rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-sm);">Protocolo de interoperabilidade cross-chain</p>
+                                </div>
+                                <span style="background-color: var(--color-success); color: white; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 700;">ATIVO</span>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md); font-size: 0.9rem;">
+                                <div>
+                                    <strong>Como Participar:</strong>
+                                    <p style="color: var(--color-text-light-secondary);">- Usar protocolo LayerZero em transações cross-chain</p>
+                                    <p style="color: var(--color-text-light-secondary);">- Fazer bridges entre blockchains</p>
+                                    <p style="color: var(--color-text-light-secondary);">- Manter atividade regular</p>
+                                </div>
+                                <div>
+                                    <strong>Deadline:</strong>
+                                    <p style="color: var(--color-danger); font-weight: 700;">📅 15 de Abril, 2026</p>
+                                    <strong style="color: var(--color-text-light-secondary);">Dias Restantes: 9</strong>
+                                </div>
+                            </div>
+                            
+                            <div style="background-color: rgba(46, 204, 113, 0.1); padding: var(--spacing-sm); border-radius: 6px; font-size: 0.85rem;">
+                                <strong>💡 Dica:</strong> Faz 3-5 transações cross-chain diferentes para maximizar elegibilidade.
+                            </div>
+                        </div>
+
+                        <!-- Airdrop 2 -->
+                        <div style="background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 8px; border-left: 3px solid var(--color-primary);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
+                                <div>
+                                    <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">🔮 Blur (BLUR) - Rounds Contínuos</h4>
+                                    <p style="font-size: 0.9rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-sm);">NFT marketplace descentralizado</p>
+                                </div>
+                                <span style="background-color: var(--color-success); color: white; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 700;">ATIVO</span>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md); font-size: 0.9rem;">
+                                <div>
+                                    <strong>Como Participar:</strong>
+                                    <p style="color: var(--color-text-light-secondary);">- Fazer bids em NFTs na plataforma Blur</p>
+                                    <p style="color: var(--color-text-light-secondary);">- Volume mínimo: €100+ em transações</p>
+                                    <p style="color: var(--color-text-light-secondary);">- Participar na season atual</p>
+                                </div>
+                                <div>
+                                    <strong>Deadline:</strong>
+                                    <p style="color: var(--color-danger); font-weight: 700;">📅 20 de Abril, 2026</p>
+                                    <strong style="color: var(--color-text-light-secondary);">Dias Restantes: 14</strong>
+                                </div>
+                            </div>
+                            
+                            <div style="background-color: rgba(46, 204, 113, 0.1); padding: var(--spacing-sm); border-radius: 6px; font-size: 0.85rem;">
+                                <strong>💡 Dica:</strong> Cada transação em Blur = pontos. Quanto mais volume, mais tokens.
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- SEÇÃO 7: PLANO DE AÇÃO DIÁRIO -->
+            <!-- SEÇÃO 6: ALERTAS EXPIRANDO -->
             <div class="briefing-section">
                 <div class="section-title">
-                    <span class="section-icon">📋</span>
-                    <span>Plano de Ação — Por Perfil</span>
+                    <span class="section-icon">⏰</span>
+                    <span>Airdrops Expirando em <7 Dias</span>
                 </div>
                 <div class="section-content">
-                    <div class="action-plan">
-                        <h4>Conservador (Cofre 70%)</h4>
-                        <ul>
-                            <li>DCA: €100/mês em BTC (sem mudanças)</li>
-                            <li>Hold ETH. Não vender em consolidação.</li>
-                            <li>Ignorar volatilidade de curto prazo.</li>
-                        </ul>
+                    <p style="margin-bottom: var(--spacing-lg);">Se não participaste ainda, agora é a última chance:</p>
+                    
+                    <div class="alert-box danger">
+                        <strong>🚨 ÚLTIMA CHANCE (Expira em 3 dias):</strong> 
+                        <p style="margin-top: var(--spacing-sm);"><strong>Jupiter (JUP) - Continuation Round</strong></p>
+                        <p style="color: var(--color-text-light-secondary);">Swap na DEX Jupiter em Solana. Prazo: 09 de Abril, 23h59 UTC.</p>
                     </div>
-                    <div class="action-plan">
-                        <h4>Balanceado (Cofre 60%, Motor 30%)</h4>
-                        <ul>
-                            <li>DCA: €60 BTC + €30 Altcoins</li>
-                            <li>Considerar pequeño reforço em Solana (tese forte).</li>
-                            <li>Manter disciplina de rebalanceamento.</li>
-                        </ul>
-                    </div>
-                    <div class="action-plan">
-                        <h4>Agressivo (Motor 50%+)</h4>
-                        <ul>
-                            <li>Monitorar breakout €43.500 em BTC para entrada.</li>
-                            <li>Altcoins: Aproveitar volatilidade em Solana/Polkadot.</li>
-                            <li>Risco máximo: 10% do capital em single posição.</li>
-                        </ul>
+
+                    <div class="alert-box warning">
+                        <strong>⏳ EXPIRA AMANHÃ (6 dias):</strong> 
+                        <p style="margin-top: var(--spacing-sm);"><strong>Pendle (PENDLE) - Historical Supporters</strong></p>
+                        <p style="color: var(--color-text-light-secondary);">Se usaste Pendle antes de 01/Março/2025, elegível.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- SEÇÃO 8: LIÇÃO EDITORIAL -->
+            <!-- SEÇÃO 7: PLANO DE AÇÃO -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">💼</span>
+                    <span>Plano de Ação (Balanceado)</span>
+                </div>
+                <div class="section-content">
+                    <ul style="color: var(--color-text-light-secondary); line-height: 2;">
+                        <li><strong>DCA:</strong> €60 em BTC + €30 em Altcoins (se tiveres orçamento)</li>
+                        <li><strong>Rebalanceamento:</strong> Verifica portfolio, ajusta posições extremas</li>
+                        <li><strong>Suportes/Resistências:</strong> Monitorar €40.800 (BTC) e €2.100 (ETH)</li>
+                        <li><strong>Stop-Loss:</strong> Ativa -10% em posições abertas</li>
+                    </ul>
+
+                    <div class="alert-box success" style="margin-top: var(--spacing-lg);">
+                        <strong>✓ MOMENTO ATUAL:</strong> Mercado em consolidação. Sem FOMO. Mantém disciplina.
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 8: LIÇÃO DO DIA -->
             <div class="briefing-section">
                 <div class="section-title">
                     <span class="section-icon">📚</span>
-                    <span>Lição Editorial do Dia</span>
+                    <span>Lição do Dia</span>
                 </div>
                 <div class="section-content">
-                    <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-md);">O Viés da Recência — Por Que Recentes Ganhos Enganam</h4>
-                    <p>Bitcoin subiu €3.200 em 10 dias. A euforia é óbvia nas redes sociais. "Bull market confirmado!" — Dizem. Influenciadores fazem vídeos. Novos utilizadores entram.</p>
-                    <p>Isto é "viés da recência" — Tu extrapolares eventos recentes para o futuro próximo. Uma subida de 10 dias não significa que continuará a subir. Historicamente, após surtos assim, 40-50% das vezes há um pullback.</p>
-                    <p><strong>O Que Fazer?</strong> Ignora o ruído. Mantém o plano. DCA. Rebalanceamento automático. Se comprou a €40.000, continua a comprar a €42.500. Quando a maioria está eufórica, é quando deves ser mais prudente.</p>
-                    <p><strong>Lição:</strong> Disciplina bate emoção. Sempre.</p>
+                    <p style="margin-bottom: var(--spacing-md);"><strong>O Viés da Recência</strong></p>
+                    <p style="color: var(--color-text-light-secondary); line-height: 1.8;">Tendência a dar peso excessivo a eventos recentes. "Bitcoin subiu 10% em 10 dias, portanto vai continuar" — ERRADO. Mercado é cíclico. Uma subida não garante continuação.</p>
+                    <div class="example-box">
+                        <strong>Solução:</strong> Mantém o plano. Faz DCA regularmente. Ignora o ruído de curto prazo. Pensa em ciclos de 4 anos (halvings).
+                    </div>
                 </div>
             </div>
 
-            <!-- DISCLAIMER -->
-            <div class="footer-disclaimer">
-                <strong>Aviso Legal & Disclaimer:</strong>
-                <p>Este briefing é conteúdo educativo. Não é aconselhamento financeiro. Não somos responsáveis por perdas. Criptoativos são altamente voláteis. Investe apenas o que podes perder. Consulta um profissional autorizado para decisões pessoais.</p>
+            <!-- SEÇÃO 9: FERRAMENTAS -->
+            <div class="briefing-section">
+                <div class="section-title">
+                    <span class="section-icon">🛠️</span>
+                    <span>Ferramentas Úteis</span>
+                </div>
+                <div class="section-content">
+                    <ul style="color: var(--color-text-light-secondary); line-height: 2;">
+                        <li><strong>Preços Real-Time:</strong> CoinGecko, Binance, Kraken</li>
+                        <li><strong>On-Chain:</strong> Glassnode, CryptoQuant, Nansen (free tiers)</li>
+                        <li><strong>Notícias:</strong> CoinTelegraph, The Block, Cryptofees</li>
+                        <li><strong>Airdrops:</strong> Airdrop.io, DefiLlama</li>
+                        <li><strong>Análise Técnica:</strong> TradingView, Coinalyze</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="alert-box success" style="margin-top: var(--spacing-xl);">
+                <strong>💚 RECOMENDAÇÃO FINAL:</strong>
+                <p style="margin-top: var(--spacing-sm); color: var(--color-text-light-secondary);">Foca-te em DCA + Hold. Trading de curto prazo é para especialistas. 99% dos traders perdem dinheiro. Tu podes ser dos 1% que ganham disciplina e paciência.</p>
             </div>
         </div>
     </div>
 
+    <!-- Botões de Redes Sociais Flutuantes -->
+    <div style="position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column-reverse; gap: 15px; z-index: 999;">
+        <a href="https://wa.me/351000000000" target="_blank" class="social-button whatsapp" aria-label="WhatsApp" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #25D366;">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://www.tiktok.com/@genesis" target="_blank" class="social-button tiktok" aria-label="TikTok" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #000000;">
+            <i class="fab fa-tiktok"></i>
+        </a>
+        <a href="https://www.instagram.com/genesis" target="_blank" class="social-button instagram" aria-label="Instagram" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://discord.gg/genesis" target="_blank" class="social-button discord" aria-label="Discord" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #5865F2;">
+            <i class="fab fa-discord"></i>
+        </a>
+    </div>
+
+    <footer>
+        <p>Genesis — Educação em Criptoativos para Portugueses</p>
+        <p>Email: genesis@protonmail.com | <a href="https://discord.gg/genesis" style="color: var(--color-primary); text-decoration: none;">Discord</a></p>
+    </footer>
+
     <script>
-        const SIGNAL_CODES = ['GS-SIGNAL-2026'];
-        let currentLanguage = localStorage.getItem('genesis-language') || 'pt';
-        let isAuthenticated = !!sessionStorage.getItem('signal-auth');
+        // CÓDIGOS ATUALIZADOS
+        const SIGNAL_CODES = ['GS-SIGNAL-2026', 'GS-K9M2-2026', 'GS-P7X4-2026', 'GS-R5L8-2026', 'GS-ADMIN-2026'];
+        let isAuthenticated = false;
 
-        const ASSETS = [
-            { symbol: 'BTC', name: 'Bitcoin', price: 42500, change: 3.2, cap: '840B' },
-            { symbol: 'ETH', name: 'Ethereum', price: 2200, change: 1.8, cap: '264B' },
-            { symbol: 'SOL', name: 'Solana', price: 145, change: 5.4, cap: '62B' },
-            { symbol: 'ADA', name: 'Cardano', price: 1.05, change: -1.2, cap: '39B' },
-            { symbol: 'XRP', name: 'Ripple', price: 0.95, change: 6.1, cap: '51B' },
-            { symbol: 'DOGE', name: 'Dogecoin', price: 0.25, change: 4.3, cap: '35B' },
-            { symbol: 'LINK', name: 'Chainlink', price: 18.5, change: 2.7, cap: '8.9B' },
-            { symbol: 'ONDO', name: 'Ondo Finance', price: 8.3, change: 4.7, cap: '2.5B' },
-            { symbol: 'ZRO', name: 'LayerZero', price: 12.5, change: -2.1, cap: '3.8B' },
-            { symbol: 'AVAX', name: 'Avalanche', price: 52, change: 3.6, cap: '18B' },
-            { symbol: 'MATIC', name: 'Polygon', price: 0.95, change: 2.2, cap: '9.2B' },
-            { symbol: 'ARB', name: 'Arbitrum', price: 1.8, change: 5.9, cap: '6.5B' },
-            { symbol: 'OP', name: 'Optimism', price: 3.2, change: 4.1, cap: '2.8B' },
-            { symbol: 'FTM', name: 'Fantom', price: 1.05, change: 1.8, cap: '3.2B' },
-            { symbol: 'ATOM', name: 'Cosmos', price: 14.2, change: 2.9, cap: '5.1B' },
-            { symbol: 'JUP', name: 'Jupiter', price: 3.5, change: 7.2, cap: '3.5B' },
-            { symbol: 'BLUR', name: 'Blur', price: 0.45, change: -3.4, cap: '0.6B' },
-            { symbol: 'NEAR', name: 'Near Protocol', price: 8.9, change: 3.3, cap: '9.2B' },
-            { symbol: 'SUI', name: 'Sui', price: 4.2, change: 6.8, cap: '2.1B' },
-            { symbol: 'APT', name: 'Aptos', price: 11.5, change: 2.5, cap: '4.8B' }
-        ];
+        // Dark Mode
+        const themeToggle = document.querySelector('.theme-toggle');
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            updateThemeIcon();
+        });
 
-        function renderPriceGrid() {
-            const html = ASSETS.map(asset => `
-                <div class="price-card">
-                    <div class="price-symbol">${asset.symbol}</div>
-                    <div class="price-value">€${asset.price.toFixed(2)}</div>
-                    <div class="price-change ${asset.change >= 0 ? 'positive' : 'negative'}">
-                        ${asset.change >= 0 ? '↑' : '↓'} ${Math.abs(asset.change).toFixed(1)}%
-                    </div>
-                </div>
-            `).join('');
+        function updateThemeIcon() {
+            themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        }
 
-            document.getElementById('price-grid').innerHTML = html;
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            updateThemeIcon();
         }
 
         // Validar código
-        document.querySelector('.code-submit').addEventListener('click', function() {
-            const code = document.getElementById('signal-code').value.toUpperCase();
+        function validateSignalCode() {
+            const code = document.getElementById('signal-code').value.toUpperCase().trim();
             const errorDiv = document.getElementById('code-error');
 
             if (SIGNAL_CODES.includes(code)) {
@@ -398,50 +457,81 @@
                 isAuthenticated = true;
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('briefing-content').classList.add('active');
-                renderPriceGrid();
                 updateBriefingDate();
                 errorDiv.classList.remove('show');
             } else {
                 errorDiv.textContent = 'Código inválido. Tenta novamente.';
                 errorDiv.classList.add('show');
             }
+        }
+
+        document.querySelector('.code-submit').addEventListener('click', validateSignalCode);
+        document.getElementById('signal-code').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') validateSignalCode();
         });
 
+        // Atualizar data
         function updateBriefingDate() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const today = new Date().toLocaleDateString('pt-PT', options);
-            document.getElementById('briefing-date').textContent = today.charAt(0).toUpperCase() + today.slice(1);
-        }
-
-        // Tema
-        document.querySelector('.theme-toggle').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('genesis-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-            this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-        });
-
-        // Idioma
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                currentLanguage = this.dataset.lang;
-                localStorage.setItem('genesis-language', currentLanguage);
-                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
+            const today = new Date().toLocaleDateString('pt-PT', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
-        });
-
-        // Carregar tema salvo
-        if (localStorage.getItem('genesis-theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.querySelector('.theme-toggle').textContent = '☀️';
+            document.getElementById('briefing-date').textContent = `Briefing de ${today}`;
         }
 
-        // Verificar autenticação ao carregar
-        if (isAuthenticated) {
+        // Gerar grid de preços
+        function renderPriceGrid() {
+            const prices = [
+                { symbol: 'BTC', name: 'Bitcoin', price: 42500, change: 3.2 },
+                { symbol: 'ETH', name: 'Ethereum', price: 2200, change: 1.8 },
+                { symbol: 'SOL', name: 'Solana', price: 145, change: 5.4 },
+                { symbol: 'ADA', name: 'Cardano', price: 1.05, change: -1.2 },
+                { symbol: 'XRP', name: 'Ripple', price: 0.95, change: 6.1 },
+                { symbol: 'DOGE', name: 'Dogecoin', price: 0.38, change: 2.5 },
+                { symbol: 'LINK', name: 'Chainlink', price: 38.5, change: -0.5 },
+                { symbol: 'MATIC', name: 'Polygon', price: 1.25, change: 3.0 },
+                { symbol: 'AVAX', name: 'Avalanche', price: 68.3, change: 2.1 },
+                { symbol: 'FTM', name: 'Fantom', price: 0.82, change: 4.2 },
+                { symbol: 'ARB', name: 'Arbitrum', price: 1.85, change: 1.9 },
+                { symbol: 'OP', name: 'Optimism', price: 3.45, change: 0.8 },
+                { symbol: 'AAVE', name: 'Aave', price: 285, change: 2.3 },
+                { symbol: 'UNI', name: 'Uniswap', price: 12.5, change: 1.5 },
+                { symbol: 'SUSHI', name: 'Sushiswap', price: 2.1, change: 3.7 },
+                { symbol: 'CRV', name: 'Curve', price: 0.95, change: -0.3 },
+                { symbol: 'GMX', name: 'GMX', price: 42.8, change: 5.2 },
+                { symbol: 'GNS', name: 'Gains Network', price: 5.5, change: 4.0 },
+                { symbol: 'PERP', name: 'Perpetual', price: 2.3, change: 2.8 },
+                { symbol: 'SNX', name: 'Synthetix', price: 8.2, change: 1.1 }
+            ];
+
+            const grid = document.getElementById('price-grid');
+            grid.innerHTML = prices.map(p => `
+                <div class="price-card">
+                    <h4>${p.symbol}</h4>
+                    <div class="price-value">€${p.price.toFixed(2)}</div>
+                    <div class="price-change ${p.change >= 0 ? 'positive' : 'negative'}">
+                        ${p.change >= 0 ? '↑' : '↓'} ${Math.abs(p.change)}%
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Verificar autenticação na carga
+        if (sessionStorage.getItem('signal-auth') === 'true') {
+            isAuthenticated = true;
             document.getElementById('gate').style.display = 'none';
             document.getElementById('briefing-content').classList.add('active');
-            renderPriceGrid();
             updateBriefingDate();
+            renderPriceGrid();
+        }
+
+        // Carregar se já tem código na URL
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('code')) {
+            document.getElementById('signal-code').value = params.get('code');
+            validateSignalCode();
         }
     </script>
 </body>
