@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Genesis — O Mapa Sério para Crypto</title>
+    <meta name="description" content="Genesis — Educação em Criptoativos para Portugueses">
+    <title>Genesis — Educação em Criptoativos</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="stripe-key" content="pk_test_51TJQ5V1KKQgf4Um11OtkrOo7hZ92qwfKy9LoUyEkMR9soN9GVdU6F49uSdy5ymN2Qf5eCl2L3rzUhutjbDh9ExS700jaHztuTo">
+    
     <style>
         :root {
             --color-primary: #1565C0;
@@ -34,17 +39,33 @@
             --font-family-body: 'Inter', sans-serif;
             --font-family-display: 'Poppins', sans-serif;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { font-family: var(--font-family-body); background-color: var(--color-bg-light); color: var(--color-text-light); line-height: 1.6; }
         body.dark-mode { background-color: var(--color-bg-dark); color: var(--color-text-dark); }
+
         header { position: fixed; top: 0; width: 100%; height: 80px; background-color: var(--color-bg-light); border-bottom: 1px solid var(--color-border-light); display: flex; justify-content: space-between; align-items: center; padding: 0 var(--spacing-lg); z-index: 1000; }
         body.dark-mode header { background-color: var(--color-bg-dark-secondary); border-bottom-color: var(--color-border-dark); }
-        .navbar-logo { font-family: var(--font-family-display); font-size: 1.8rem; font-weight: 800; color: var(--color-primary); text-decoration: none; }
+        
+        .navbar-logo { 
+            font-family: var(--font-family-display); 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: var(--color-primary); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        
+        .navbar-logo svg { width: 32px; height: 32px; }
+        
         .navbar-links { display: flex; gap: var(--spacing-xl); list-style: none; }
         .navbar-links a { text-decoration: none; color: var(--color-text-light); font-weight: 500; }
         body.dark-mode .navbar-links a { color: var(--color-text-dark); }
         .navbar-links a:hover { color: var(--color-primary); }
+        
         .navbar-controls { display: flex; gap: var(--spacing-md); align-items: center; }
         .language-toggle { display: flex; gap: 0.5rem; background-color: var(--color-bg-light-secondary); padding: 0.4rem; border-radius: 8px; border: none; }
         body.dark-mode .language-toggle { background-color: var(--color-bg-dark); }
@@ -52,135 +73,106 @@
         body.dark-mode .language-toggle button { color: var(--color-text-dark-secondary); }
         .language-toggle button.active { background-color: var(--color-primary); color: white; }
         .theme-toggle { background: none; border: none; cursor: pointer; font-size: 1.3rem; }
-        .navbar-cta { background-color: var(--color-primary); color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
         .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
         .hamburger span { width: 25px; height: 3px; background-color: var(--color-text-light); border-radius: 2px; }
         body.dark-mode .hamburger span { background-color: var(--color-text-dark); }
-        .mobile-menu { display: none; position: fixed; top: 80px; left: 0; width: 100%; background-color: var(--color-bg-light); flex-direction: column; gap: var(--spacing-md); padding: var(--spacing-lg); z-index: 999; border-bottom: 1px solid var(--color-border-light); }
-        body.dark-mode .mobile-menu { background-color: var(--color-bg-dark-secondary); }
-        .mobile-menu.active { display: flex; }
-        .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(to right, var(--color-primary), var(--color-primary-light)); width: 0; z-index: 1001; }
-        .ticker-container { background-color: var(--color-bg-light-secondary); border-bottom: 1px solid var(--color-border-light); padding: var(--spacing-md) 0; overflow: hidden; margin-top: 80px; }
-        body.dark-mode .ticker-container { background-color: var(--color-bg-dark-secondary); }
-        .ticker { display: flex; gap: var(--spacing-lg); animation: scroll-ticker 40s linear infinite; padding: 0 var(--spacing-lg); }
-        .ticker:hover { animation-play-state: paused; }
-        .ticker-item { display: flex; gap: var(--spacing-sm); align-items: center; white-space: nowrap; padding: var(--spacing-sm) var(--spacing-md); background-color: var(--color-bg-light); border-radius: 8px; min-width: fit-content; }
-        body.dark-mode .ticker-item { background-color: var(--color-bg-dark); }
-        .ticker-symbol { font-weight: 700; color: var(--color-primary); }
-        .ticker-price { font-weight: 600; }
-        .ticker-change { font-weight: 600; font-size: 0.9rem; }
-        .ticker-change.positive { color: var(--color-success); }
-        .ticker-change.negative { color: var(--color-danger); }
-        @keyframes scroll-ticker { from { transform: translateX(0); } to { transform: translateX(-100%); } }
-        .hero { margin-top: 80px; padding: var(--spacing-xxl) var(--spacing-lg); text-align: center; background: linear-gradient(135deg, var(--color-bg-light) 0%, var(--color-bg-light-secondary) 100%); position: relative; overflow: hidden; }
-        body.dark-mode .hero { background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-dark-secondary) 100%); }
-        .hero::before { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(21, 101, 192, 0.1) 1px, transparent 1px); background-size: 50px 50px; animation: drift 20s linear infinite; z-index: 0; }
-        @keyframes drift { 0% { transform: translateX(0) translateY(0); } 100% { transform: translateX(50px) translateY(50px); } }
-        .hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
-        .hero h1 { font-family: var(--font-family-display); font-size: 3.5rem; font-weight: 800; margin-bottom: var(--spacing-md); line-height: 1.2; }
-        .hero p { font-size: 1.2rem; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-lg); line-height: 1.7; }
-        body.dark-mode .hero p { color: var(--color-text-dark-secondary); }
-        .hero-trust-line { display: flex; justify-content: center; gap: var(--spacing-md); margin-bottom: var(--spacing-xl); font-size: 0.9rem; color: var(--color-text-light-secondary); flex-wrap: wrap; }
-        .hero-trust-line span { border-right: 1px solid var(--color-text-light-secondary); padding-right: var(--spacing-md); }
-        .hero-trust-line span:last-child { border-right: none; }
-        .hero-ctas { display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap; margin-bottom: var(--spacing-xxl); }
-        .cta-primary, .cta-secondary { padding: 1rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-block; }
-        .cta-primary { background-color: var(--color-primary); color: white; }
-        .cta-primary:hover { background-color: var(--color-primary-dark); }
-        .cta-secondary { background-color: transparent; color: var(--color-primary); border: 2px solid var(--color-primary); }
-        .cta-secondary:hover { background-color: var(--color-primary); color: white; }
-        .hero-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg); margin-top: var(--spacing-xl); }
-        .stat-card { background-color: var(--color-bg-light); padding: var(--spacing-lg); border-radius: 12px; border: 1px solid var(--color-border-light); }
-        body.dark-mode .stat-card { background-color: var(--color-bg-dark); border-color: var(--color-border-dark); }
-        .stat-number { font-family: var(--font-family-display); font-size: 2rem; font-weight: 700; color: var(--color-primary); }
-        .stat-label { font-size: 0.9rem; color: var(--color-text-light-secondary); margin-top: var(--spacing-sm); }
-        section { padding: var(--spacing-xxl) var(--spacing-lg); max-width: 1200px; margin: 0 auto; }
-        section h2 { font-family: var(--font-family-display); font-size: 2.5rem; font-weight: 800; margin-bottom: var(--spacing-lg); text-align: center; }
-        .filosofia-content { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-xxl); align-items: center; }
-        .filosofia-text h3 { font-family: var(--font-family-display); font-size: 1.8rem; margin-bottom: var(--spacing-md); }
-        .filosofia-text p { margin-bottom: var(--spacing-md); color: var(--color-text-light-secondary); line-height: 1.8; }
-        .filosofia-quote { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-left: 4px solid var(--color-primary); margin: var(--spacing-lg) 0; font-size: 1.1rem; font-style: italic; }
-        .pilares { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-lg); margin-top: var(--spacing-xl); }
-        .pilar { background-color: var(--color-bg-light-secondary); padding: var(--spacing-lg); border-radius: 12px; border-left: 4px solid var(--color-primary); }
-        body.dark-mode .pilar { background-color: var(--color-bg-dark); }
-        .pilar h4 { font-family: var(--font-family-display); font-weight: 700; margin-bottom: var(--spacing-sm); color: var(--color-primary); }
-        .pilar p { color: var(--color-text-light-secondary); font-size: 0.95rem; }
-        .filosofia-visual { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); height: 300px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.2rem; }
-        .genesis-block-section { text-align: center; }
-        .genesis-block { background-color: var(--color-bg-light-secondary); border: 2px solid var(--color-primary); padding: var(--spacing-lg); border-radius: 12px; max-width: 600px; margin: var(--spacing-xl) auto; font-family: 'Courier New', monospace; font-size: 0.85rem; text-align: left; line-height: 1.8; overflow-x: auto; }
-        body.dark-mode .genesis-block { background-color: var(--color-bg-dark); }
-        .genesis-block-label { color: var(--color-primary); font-weight: 700; }
-        .produtos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-xl); margin-top: var(--spacing-xl); }
-        .produto-card { background-color: var(--color-bg-light); border: 2px solid var(--color-border-light); border-radius: 12px; padding: var(--spacing-xl); transition: all 0.3s ease; }
-        body.dark-mode .produto-card { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
-        .produto-card:hover { border-color: var(--color-primary); transform: translateY(-5px); }
-        .produto-badge { display: inline-block; background-color: var(--color-primary); color: white; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 700; margin-bottom: var(--spacing-md); }
-        .produto-card h3 { font-family: var(--font-family-display); font-size: 1.8rem; margin-bottom: var(--spacing-md); }
-        .produto-card p { color: var(--color-text-light-secondary); margin-bottom: var(--spacing-md); }
+
+        main { margin-top: 80px; }
+
+        section { padding: var(--spacing-xxl) var(--spacing-lg); }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-family-display); font-weight: 800; }
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2.5rem; }
+        h3 { font-size: 1.8rem; }
+
+        #hero { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); color: white; text-align: center; padding-top: 150px; }
+        #hero h1 { margin-bottom: var(--spacing-md); }
+        #hero p { font-size: 1.2rem; margin-bottom: var(--spacing-lg); opacity: 0.95; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .cta-primary { background-color: white; color: var(--color-primary); padding: 0.8rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+        .cta-primary:hover { transform: scale(1.05); }
+        .cta-secondary { background-color: var(--color-primary); color: white; padding: 0.8rem 1.5rem; border: 2px solid white; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+        .cta-secondary:hover { background-color: white; color: var(--color-primary); }
+
+        #features { background-color: var(--color-bg-light-secondary); }
+        body.dark-mode #features { background-color: var(--color-bg-dark); }
+        
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-xl); margin-top: var(--spacing-xl); }
+        .feature-card { background-color: white; padding: var(--spacing-xl); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid var(--color-primary); }
+        body.dark-mode .feature-card { background-color: var(--color-bg-dark-secondary); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .feature-card h3 { color: var(--color-primary); margin-bottom: var(--spacing-md); }
+
+        #produtos { background-color: white; }
+        body.dark-mode #produtos { background-color: var(--color-bg-dark-secondary); }
+        
+        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--spacing-xl); margin-top: var(--spacing-xl); }
+        .produto-card { background-color: var(--color-bg-light-secondary); padding: var(--spacing-xl); border-radius: 12px; border: 2px solid var(--color-border-light); transition: all 0.3s; }
+        body.dark-mode .produto-card { background-color: var(--color-bg-dark); border-color: var(--color-border-dark); }
+        .produto-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .produto-badge { display: inline-block; background-color: var(--color-primary); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: var(--spacing-md); }
+        .produto-card h3 { color: var(--color-primary); margin: var(--spacing-md) 0; }
         .produto-features { list-style: none; margin: var(--spacing-lg) 0; }
-        .produto-features li { padding: 0.5rem 0; padding-left: 1.5rem; position: relative; color: var(--color-text-light-secondary); }
-        .produto-features li::before { content: '✓'; position: absolute; left: 0; color: var(--color-success); font-weight: 700; }
-        .produto-preco { background-color: var(--color-bg-light-secondary); padding: var(--spacing-md); border-radius: 8px; margin: var(--spacing-lg) 0; text-align: center; }
-        .produto-preco-valor { font-family: var(--font-family-display); font-size: 2rem; font-weight: 700; color: var(--color-primary); }
-        .comunidade-section { background-color: var(--color-bg-light-secondary); border-radius: 12px; padding: var(--spacing-xl); text-align: center; }
-        body.dark-mode .comunidade-section { background-color: var(--color-bg-dark); }
-        .comunidade-structure { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-lg); margin: var(--spacing-xl) 0; text-align: left; }
-        .comunidade-canal { background-color: var(--color-bg-light); padding: var(--spacing-md); border-radius: 8px; border-left: 3px solid var(--color-primary); }
-        body.dark-mode .comunidade-canal { background-color: var(--color-bg-dark-secondary); }
-        .comunidade-canal h4 { color: var(--color-primary); margin-bottom: var(--spacing-sm); }
-        .comunidade-canal p { font-size: 0.9rem; color: var(--color-text-light-secondary); }
-        .discord-button { background-color: #5865F2; color: white; padding: 1rem 2rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; margin-top: var(--spacing-lg); }
-        .discord-button:hover { background-color: #4752C4; }
-        .testemunhos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg); margin-top: var(--spacing-xl); }
-        .testemunho { background-color: var(--color-bg-light); border: 1px solid var(--color-border-light); padding: var(--spacing-lg); border-radius: 12px; }
-        body.dark-mode .testemunho { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
-        .testemunho-texto { font-style: italic; color: var(--color-text-light-secondary); margin-bottom: var(--spacing-md); }
-        .testemunho-autor { font-weight: 700; color: var(--color-primary); }
-        .testemunho-profissao { font-size: 0.9rem; color: var(--color-text-light-secondary); }
-        .faq-section { max-width: 800px; margin: var(--spacing-xl) auto 0; }
-        .accordion-item { background-color: var(--color-bg-light); border: 1px solid var(--color-border-light); border-radius: 8px; margin-bottom: var(--spacing-md); overflow: hidden; }
-        body.dark-mode .accordion-item { background-color: var(--color-bg-dark-secondary); border-color: var(--color-border-dark); }
-        .accordion-header { padding: var(--spacing-lg); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; background-color: var(--color-bg-light-secondary); }
-        body.dark-mode .accordion-header { background-color: var(--color-bg-dark); }
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .accordion-item.active .accordion-content { max-height: 500px; }
-        .accordion-body { padding: var(--spacing-lg); color: var(--color-text-light-secondary); line-height: 1.8; }
-        footer { background-color: var(--color-bg-light-secondary); padding: var(--spacing-xl) var(--spacing-lg); margin-top: var(--spacing-xxl); border-top: 1px solid var(--color-border-light); }
+        .produto-features li { padding: 0.5rem 0; color: var(--color-text-light-secondary); }
+        body.dark-mode .produto-features li { color: var(--color-text-dark-secondary); }
+        .produto-features li:before { content: "✓ "; color: var(--color-success); font-weight: 700; }
+        .produto-preco { background-color: var(--color-bg-light); padding: var(--spacing-md); border-radius: 8px; margin: var(--spacing-lg) 0; text-align: center; }
+        body.dark-mode .produto-preco { background-color: var(--color-bg-dark-secondary); }
+        .produto-preco-valor { font-size: 2rem; font-weight: 800; color: var(--color-primary); }
+
+        #sobre { background-color: white; }
+        body.dark-mode #sobre { background-color: var(--color-bg-dark-secondary); }
+        .sobre-content { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-xl); align-items: center; margin-top: var(--spacing-xl); }
+        .sobre-text h3 { color: var(--color-primary); margin-bottom: var(--spacing-md); }
+        .sobre-text ul { list-style: none; margin-left: var(--spacing-lg); }
+        .sobre-text li { margin: var(--spacing-md) 0; }
+        .sobre-text li:before { content: "→ "; color: var(--color-primary); font-weight: 700; }
+
+        #comunidade { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); color: white; }
+        .comunidade-structure { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-lg); margin-top: var(--spacing-xl); }
+        .comunidade-canal { background-color: rgba(255,255,255,0.1); padding: var(--spacing-lg); border-radius: 8px; border-left: 3px solid white; }
+        .comunidade-canal h4 { margin-bottom: var(--spacing-md); }
+
+        #faq { background-color: var(--color-bg-light-secondary); }
+        body.dark-mode #faq { background-color: var(--color-bg-dark); }
+        .faq-item { background-color: white; padding: var(--spacing-lg); border-radius: 8px; margin-bottom: var(--spacing-lg); }
+        body.dark-mode .faq-item { background-color: var(--color-bg-dark-secondary); }
+        .faq-question { font-weight: 700; color: var(--color-primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .faq-answer { display: none; margin-top: var(--spacing-md); color: var(--color-text-light-secondary); }
+        body.dark-mode .faq-answer { color: var(--color-text-dark-secondary); }
+        .faq-item.active .faq-answer { display: block; }
+
+        footer { background-color: var(--color-bg-light); border-top: 1px solid var(--color-border-light); padding: var(--spacing-xl) var(--spacing-lg); text-align: center; color: var(--color-text-light-secondary); }
         body.dark-mode footer { background-color: var(--color-bg-dark-secondary); border-top-color: var(--color-border-dark); }
-        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacing-xl); margin-bottom: var(--spacing-xl); }
-        .footer-section h4 { color: var(--color-primary); margin-bottom: var(--spacing-md); }
-        .footer-section ul { list-style: none; }
-        .footer-section li { margin-bottom: var(--spacing-sm); }
-        .footer-section a { text-decoration: none; color: var(--color-text-light-secondary); }
-        .footer-section a:hover { color: var(--color-primary); }
-        .footer-disclaimer { background-color: var(--color-bg-light); padding: var(--spacing-lg); border-radius: 8px; border-left: 3px solid var(--color-warning); font-size: 0.9rem; color: var(--color-text-light-secondary); line-height: 1.7; max-width: 1200px; margin: 0 auto; }
-        body.dark-mode .footer-disclaimer { background-color: var(--color-bg-dark); }
-        .footer-bottom { border-top: 1px solid var(--color-border-light); padding-top: var(--spacing-lg); text-align: center; color: var(--color-text-light-secondary); font-size: 0.9rem; max-width: 1200px; margin: 0 auto; }
-        .scroll-to-top { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; background-color: var(--color-primary); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-        .scroll-to-top.active { opacity: 1; visibility: visible; }
-        .scroll-to-top:hover { background-color: var(--color-primary-dark); }
-        .whatsapp-button { position: fixed; bottom: 30px; right: 100px; width: 55px; height: 55px; background-color: #25D366; color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; z-index: 999; text-decoration: none; }
-        .whatsapp-button:hover { background-color: #20BA5C; }
+
         @media (max-width: 768px) {
             .navbar-links { display: none; }
             .hamburger { display: flex; }
-            .hero h1 { font-size: 2rem; }
-            .filosofia-content { grid-template-columns: 1fr; }
-            .pilares { grid-template-columns: 1fr; }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.8rem; }
+            .sobre-content { grid-template-columns: 1fr; }
             .produtos-grid { grid-template-columns: 1fr; }
-            .footer-content { grid-template-columns: 1fr; }
-            section { padding: var(--spacing-xl) var(--spacing-md); }
-            section h2 { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
     <header>
-        <a href="#" class="navbar-logo">GENESIS</a>
+        <a href="#hero" class="navbar-logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="10" height="10" stroke="#1565C0" stroke-width="2" fill="none" rx="2"/>
+                <rect x="18" y="4" width="10" height="10" stroke="#1565C0" stroke-width="2" fill="none" rx="2"/>
+                <rect x="4" y="18" width="10" height="10" stroke="#1565C0" stroke-width="2" fill="none" rx="2"/>
+                <rect x="18" y="18" width="10" height="10" stroke="#1E88E5" stroke-width="2" fill="#1E88E5" rx="2"/>
+                <line x1="14" y1="9" x2="18" y2="9" stroke="#1565C0" stroke-width="1.5"/>
+                <line x1="9" y1="14" x2="9" y2="18" stroke="#1565C0" stroke-width="1.5"/>
+                <line x1="23" y1="14" x2="23" y2="18" stroke="#1E88E5" stroke-width="1.5"/>
+            </svg>
+            GENESIS
+        </a>
         <nav class="navbar-links">
-            <a href="#filosofia">Filosofia</a>
+            <a href="#features">Features</a>
             <a href="#produtos">Produtos</a>
-            <a href="#comunidade">Comunidade</a>
+            <a href="#sobre">Sobre</a>
             <a href="#faq">FAQ</a>
         </nav>
         <div class="navbar-controls">
@@ -189,474 +181,423 @@
                 <button class="lang-btn" data-lang="en">EN</button>
             </div>
             <button class="theme-toggle">🌙</button>
-            <button class="navbar-cta" onclick="window.location.href='genesis-vault.html'">Entrar no Vault</button>
         </div>
         <div class="hamburger"><span></span><span></span><span></span></div>
     </header>
 
-    <div class="mobile-menu">
-        <a href="#filosofia">Filosofia</a>
-        <a href="#produtos">Produtos</a>
-        <a href="#comunidade">Comunidade</a>
-        <a href="#faq">FAQ</a>
-        <button class="navbar-cta" onclick="window.location.href='genesis-vault.html'">Entrar no Vault</button>
+    <main>
+        <!-- HERO -->
+        <section id="hero">
+            <div class="container">
+                <h1>A ESCOLA QUE O MERCADO NÃO TE DÁ</h1>
+                <p>Cansado de ruído, promessas vazias e grupos de Telegram? Genesis é o mapa sério para quem está farto de se perder. Educação profunda, gestão de risco obsessiva e contexto 100% português.</p>
+                <div style="display: flex; gap: var(--spacing-lg); justify-content: center; flex-wrap: wrap;">
+                    <button class="cta-secondary" onclick="document.getElementById('produtos').scrollIntoView({behavior: 'smooth'})">Explorar Cursos</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section id="features">
+            <div class="container">
+                <h2 style="text-align: center;">Por Que Genesis?</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>📚 14 Capítulos Base</h3>
+                        <p>Desde Bitcoin até Smart Contracts. Tudo estruturado, nada aleatório. Economia de cripto explicada como se fosses 5 anos.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📊 Briefing Diário</h3>
+                        <p>15 minutos por dia. Análise macro, preços reais, on-chain, alertas. Sem FOMO, com sistema.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🇵🇹 Contexto Português</h3>
+                        <p>Fiscalidade explicada (como pagar menos imposto legalmente). Exchanges que funcionam em PT. Comunidade local.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>⚙️ Simuladores Práticos</h3>
+                        <p>Não é só teoria. Simula DCA, análise técnica, risco/reward. Aprende errando sem perder dinheiro.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🎁 Módulo de Airdrops</h3>
+                        <p>Como ganhar tokens grátis. Verdade sobre projetos fake. Estratégia completa de farming.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>💎 Comunidade VIP</h3>
+                        <p>Discord com traders reais. AMAs semanais. Partilha de análises. Suporte prioritário.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUTOS -->
+        <section id="produtos">
+            <div class="container">
+                <h2 style="text-align: center;">Produtos</h2>
+                <div class="produtos-grid">
+                    <!-- VAULT -->
+                    <div class="produto-card">
+                        <span class="produto-badge">Guia Completo</span>
+                        <h3>Genesis Vault</h3>
+                        <p>O curso estruturado com 14 capítulos base + módulos avançados. Quizzes, simuladores práticos e análise de fiscalidade portuguesa.</p>
+                        <ul class="produto-features">
+                            <li>14 Capítulos Completos</li>
+                            <li>Quizzes de Validação</li>
+                            <li>Simuladores Interativos</li>
+                            <li>Análise Fiscal Portuguesa</li>
+                            <li>Módulo de Airdrops</li>
+                            <li>Acesso Vitalício</li>
+                        </ul>
+                        <div class="produto-preco">
+                            <div class="produto-preco-valor">€20</div>
+                            <div>Compra única, acesso vitalício</div>
+                        </div>
+                        <button class="cta-primary" onclick="buyVault()" style="width: 100%; margin-bottom: 0.5rem;">💳 Comprar Agora</button>
+                        <p style="font-size: 0.85rem; color: var(--color-text-light-secondary); text-align: center;">
+                            ou <a href="javascript:accessWithCode('vault')" style="color: var(--color-primary); text-decoration: none; cursor: pointer;">acede com código</a>
+                        </p>
+                    </div>
+
+                    <!-- SIGNAL -->
+                    <div class="produto-card">
+                        <span class="produto-badge">Briefing Diário</span>
+                        <h3>Genesis Signal</h3>
+                        <p>Briefing diário de 15 minutos: análise macro, contexto PT, 20 ativos, on-chain, alertas e plano de ação.</p>
+                        <ul class="produto-features">
+                            <li>Briefing Diário (Seg-Sab)</li>
+                            <li>20 Ativos em Tempo Real</li>
+                            <li>Análise On-Chain</li>
+                            <li>Alertas Estruturados</li>
+                            <li>Airdrops do Momento</li>
+                            <li>Email + Web Dashboard</li>
+                        </ul>
+                        <div class="produto-preco">
+                            <div class="produto-preco-valor">€15</div>
+                            <div>Subscrição mensal</div>
+                        </div>
+                        <button class="cta-primary" onclick="buySignal()" style="width: 100%; margin-bottom: 0.5rem;">💳 Subscrever</button>
+                        <p style="font-size: 0.85rem; color: var(--color-text-light-secondary); text-align: center;">
+                            ou <a href="javascript:accessWithCode('signal')" style="color: var(--color-primary); text-decoration: none; cursor: pointer;">acede com código</a>
+                        </p>
+                    </div>
+
+                    <!-- BUNDLE -->
+                    <div class="produto-card" style="background: linear-gradient(135deg, #1565C0, #1E88E5); color: white; border: 2px solid #1E88E5;">
+                        <span class="produto-badge" style="background-color: #2ECC71;">⭐ RECOMENDADO</span>
+                        <h3 style="color: white;">Genesis Bundle</h3>
+                        <p style="color: rgba(255,255,255,0.9);">Acesso completo: Vault vitalício + Signal €15/mês. O pacote mais completo com melhor relação custo-benefício.</p>
+                        <ul class="produto-features" style="color: rgba(255,255,255,0.8);">
+                            <li>✓ Tudo do Vault (vitalício)</li>
+                            <li>✓ Tudo do Signal (€15/mês)</li>
+                            <li>✓ Suporte Prioritário</li>
+                            <li>✓ Comunidade Discord VIP</li>
+                            <li>✓ 20% de Desconto</li>
+                            <li>✓ Atualizações Futuras</li>
+                        </ul>
+                        <div class="produto-preco" style="background-color: rgba(255,255,255,0.15); color: white; border-left: 3px solid #2ECC71;">
+                            <div class="produto-preco-valor" style="color: white;">€30/mês</div>
+                            <div style="color: rgba(255,255,255,0.8);">Vault (vitalício) + Signal</div>
+                        </div>
+                        <button class="cta-primary" onclick="buyBundle()" style="width: 100%; background-color: white; color: #1565C0; font-weight: 700; margin-bottom: 0.5rem;">💳 Comprar Bundle</button>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); text-align: center;">
+                            ou <a href="javascript:accessWithCode('bundle')" style="color: white; text-decoration: underline; cursor: pointer;">acede com código</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: var(--spacing-xl); color: var(--color-text-light-secondary); font-size: 0.9rem;">
+                    <p>Dúvidas? <a href="https://wa.me/351000000000" target="_blank" style="color: var(--color-primary); text-decoration: none;">Contacta-nos via WhatsApp</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOBRE -->
+        <section id="sobre">
+            <div class="container">
+                <h2>O Que Vais Aprender</h2>
+                <div class="sobre-content">
+                    <div class="sobre-text">
+                        <h3>No Vault:</h3>
+                        <ul>
+                            <li>Bitcoin, Blockchain, Wallets & Segurança</li>
+                            <li>Análise Técnica (MA, RSI, MACD)</li>
+                            <li>Gestão de Risco (regra 1:3, stop-loss)</li>
+                            <li>Altcoins e DeFi (yield farming, staking)</li>
+                            <li>Fiscalidade PT (como pagar menos imposto)</li>
+                            <li>On-Chain Analytics (whale tracking)</li>
+                            <li>Psicologia do Trader (FOMO, panic selling)</li>
+                            <li>Smart Contracts e NFTs</li>
+                            <li>Airdrops: Como ganhar tokens grátis</li>
+                            <li>Estratégias reais (DCA, lump sum, hold)</li>
+                        </ul>
+                    </div>
+                    <div class="sobre-text">
+                        <h3>No Signal:</h3>
+                        <ul>
+                            <li>Contexto macro diário (FED, inflação, etc)</li>
+                            <li>Preços reais de 20 ativos (BTC, ETH, altcoins)</li>
+                            <li>Análise técnica rápida (suportes, resistências)</li>
+                            <li>On-chain metrics (whale movements, flows)</li>
+                            <li>Airdrops ativos (como participar)</li>
+                            <li>Alertas estruturados (o que fazer hoje)</li>
+                            <li>Plano de ação personalizado</li>
+                            <li>Psicologia de mercado</li>
+                            <li>Lição diária (ciclos, comportamento, etc)</li>
+                            <li>Email automático + web dashboard</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMUNIDADE -->
+        <section id="comunidade">
+            <div class="container">
+                <h2 style="color: white; text-align: center;">Genesis Block Community</h2>
+                <p style="text-align: center; margin-bottom: var(--spacing-xl); opacity: 0.95;">Junta-te a centenas de traders portugueses. Discord com análises em tempo real, AMAs semanais, airdrops exclusivos.</p>
+                <div class="comunidade-structure">
+                    <div class="comunidade-canal">
+                        <h4>📢 Informação</h4>
+                        <p>Anúncios, regras, atualizações e recursos. Mantém-te atualizado com novidades do projecto.</p>
+                    </div>
+                    <div class="comunidade-canal">
+                        <h4>🏫 Genesis Vault</h4>
+                        <p>Dúvidas sobre capítulos, módulos e simuladores. Comunidade ajuda comunidade.</p>
+                    </div>
+                    <div class="comunidade-canal">
+                        <h4>📊 Genesis Signal</h4>
+                        <p>Discussão dos briefings e análises. Partilha perspetivas e insights diários.</p>
+                    </div>
+                    <div class="comunidade-canal">
+                        <h4>💬 Comunidade Geral</h4>
+                        <p>Conversas livres e partilha de recursos. Networking com outras pessoas da comunidade.</p>
+                    </div>
+                    <div class="comunidade-canal">
+                        <h4>⭐ AMA Semanais</h4>
+                        <p>Ask Me Anything todos os domingos às 19h. Conversa direta com a equipa Genesis.</p>
+                    </div>
+                    <div class="comunidade-canal">
+                        <h4>🎯 Eventos & Airdrops</h4>
+                        <p>Alertas de airdrops, eventos especiais e oportunidades exclusivas para membros.</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: var(--spacing-xl);">
+                    <a href="https://discord.gg/genesis" target="_blank" class="cta-secondary">Junta-te ao Discord</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+            <div class="container">
+                <h2 style="text-align: center;">Perguntas Frequentes</h2>
+                <div style="max-width: 800px; margin: var(--spacing-xl) auto;">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Preciso de experiência prévia?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">Não. Genesis começa do zero. Explicamos Bitcoin como se fosses criança. Depois vamos mais fundo. Perfeito para iniciantes, mas também útil para quem já sabe (aprendes contexto português e fiscalidade).</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Vale a pena pagar pelos cursos?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">Depende do teu objetivo. Se vais investir €1000+ em cripto, €20 num curso é risco zero vs ganho potencial de €10.000+. Se vais investir €100, talvez não valha. Mas a maioria dos traders que perdem dinheiro é porque não têm educação.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            E se não gostar, tenho reembolso?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">Vault é compra única, sem reembolso (é intelectual property). Signal é subscrição mensal, podes cancelar quando quiseres (sem multa). Se tiveres problemas técnicos, contacta-nos (genesis@protonmail.com).</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Quanto posso ganhar com isto?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">Nenhum curso garante ganhos. Educação + disciplina + tempo = melhor chance de sucesso. Vimos membros ganhar €1000-10.000 em airdrops. Outros fazer 2-5x com DCA. Mas criptomoedas são volatilidade — pode perder também. Educação reduz risco.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            É seguro investir em crypto?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">Tão seguro quanto ações. Mais volátil, mas sem intermediários (se usares cold wallet). Genesis ensina segurança obsessiva: seed phrases, cold wallets, verificação de sites. Risco de perder dinheiro existe — nunca invistas mais do que podes perder.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Qual é o tamanho mínimo para começar?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">€10-50 é suficiente para aprender. Depois scalas conforme vais ganhando confiança. DCA de €50/mês é estratégia sólida. Não precisas de milhões — disciplina é mais importante que capital.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Botões de Redes Sociais Flutuantes -->
+    <div style="position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column-reverse; gap: 15px; z-index: 999;">
+        <a href="https://wa.me/351000000000" target="_blank" class="social-button whatsapp" aria-label="WhatsApp" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #25D366;">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://www.tiktok.com/@genesis" target="_blank" class="social-button tiktok" aria-label="TikTok" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #000000;">
+            <i class="fab fa-tiktok"></i>
+        </a>
+        <a href="https://www.instagram.com/genesis" target="_blank" class="social-button instagram" aria-label="Instagram" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://discord.gg/genesis" target="_blank" class="social-button discord" aria-label="Discord" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #5865F2;">
+            <i class="fab fa-discord"></i>
+        </a>
     </div>
-
-    <div class="progress-bar"></div>
-
-    <div class="ticker-container">
-        <div class="ticker" id="ticker"></div>
-    </div>
-
-    <section class="hero">
-        <div class="hero-content">
-            <h1>A ESCOLA QUE O MERCADO NÃO TE DÁ</h1>
-            <p>Cansado de ruído, promessas vazias e grupos de Telegram? Genesis é o mapa sério para quem está farto de se perder. Educação profunda, gestão de risco obsessiva e contexto 100% português.</p>
-            
-            <div class="hero-trust-line">
-                <span>Equipa portuguesa anónima</span>
-                <span>Sem patrocinadores</span>
-                <span>Sem agenda escondida</span>
-            </div>
-
-            <div class="hero-ctas">
-                <button class="cta-primary" onclick="window.location.href='genesis-vault.html'">Ver Genesis Vault</button>
-                <button class="cta-secondary" onclick="window.location.href='genesis-signal.html'">Ver Genesis Signal</button>
-            </div>
-
-            <div class="hero-stats">
-                <div class="stat-card">
-                    <div class="stat-number">13</div>
-                    <div class="stat-label">Capítulos Completos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">100+</div>
-                    <div class="stat-label">Ativos Analisados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">🇵🇹</div>
-                    <div class="stat-label">100% Contexto PT</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="filosofia">
-        <h2>Filosofia & Quem Somos</h2>
-        <div class="filosofia-content">
-            <div class="filosofia-text">
-                <h3>Porque é que o Genesis existe</h3>
-                <p>A crise de 2008 mostrou ao mundo que o sistema financeiro tradicional falha quando mais importa. O Bitcoin nasceu como resposta a essa falha: dinheiro sem intermediários, sem promessas, apenas código e criptografia.</p>
-                
-                <p>Genesis é para o português que está cansado de Telegram, influenciadores sem cara e promessas de enriquecimento rápido. Quer aprender, quer disciplina, quer um plano.</p>
-
-                <div class="filosofia-quote">«Não somos gurus. Somos analistas que começámos do zero, cometemos erros muito caros e queremos partilhar o que aprendemos — sem dramatismo, sem vendas.»</div>
-
-                <p>Os quatro pilares que estruturam tudo:</p>
-
-                <div class="pilares">
-                    <div class="pilar">
-                        <h4>1. Conhecimento Primeiro</h4>
-                        <p>Antes de um euro, entendes a tecnologia, o ciclo, o risco.</p>
-                    </div>
-                    <div class="pilar">
-                        <h4>2. Gestão de Risco Sempre</h4>
-                        <p>Não é 'quanto posso ganhar?'. É 'quanto posso perder?'</p>
-                    </div>
-                    <div class="pilar">
-                        <h4>3. Disciplina Como Ativo</h4>
-                        <p>Um plano simples executado 100% bate um plano perfeito executado 50%.</p>
-                    </div>
-                    <div class="pilar">
-                        <h4>4. Contexto Português Sempre</h4>
-                        <p>IRS, legislação, economia local. Adaptamos à realidade portuguesa.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="filosofia-visual">
-                <div style="text-align: center;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🧭</div>
-                    <div>O mapa sério para quem está farto de se perder</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="genesis-block-section">
-        <h2>Porque é que se chama Genesis</h2>
-        <p>Em janeiro de 2009, Satoshi Nakamoto minerou o primeiro bloco da Bitcoin. Ficou conhecido como 'Genesis Block'. No bloco, havia uma mensagem:</p>
-        <div class="genesis-block">
-            <p><span class="genesis-block-label">Block Height:</span> 0</p>
-            <p><span class="genesis-block-label">Timestamp:</span> 2009-01-03 18:15:05 UTC</p>
-            <p><span class="genesis-block-label">Message:</span> "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"</p>
-            <p style="margin-top: 1rem; font-style: italic;">— Uma referência ao colapso financeiro de 2008.</p>
-        </div>
-        <p style="margin-top: var(--spacing-lg);">Escolhemos 'Genesis' porque é exatamente isso que és: o teu novo começo.</p>
-    </section>
-
-    <section id="produtos">
-        <h2>Produtos</h2>
-        <div class="produtos-grid">
-            <div class="produto-card">
-                <span class="produto-badge">Guia Completo</span>
-                <h3>Genesis Vault</h3>
-                <p>O curso estruturado com 13 capítulos base + 5 módulos avançados. Quizzes, simuladores práticos e análise de fiscalidade portuguesa.</p>
-                <ul class="produto-features">
-                    <li>Blockchain, PoW vs PoS, smart contracts</li>
-                    <li>Wallets non-custodial e segurança</li>
-                    <li>Análise técnica e fundamentos</li>
-                    <li>Framework de alocação: Cofre + Motor + DCA</li>
-                    <li>On-chain analytics</li>
-                    <li>Psicologia e viéses cognitivos</li>
-                    <li>Fiscalidade portuguesa completa</li>
-                    <li>Simuladores interativos</li>
-                </ul>
-                <div class="produto-preco">
-                    <div class="produto-preco-valor">€20</div>
-                    <div>Compra única, acesso vitalício</div>
-                </div>
-                <button class="cta-primary" onclick="window.location.href='genesis-vault.html'">Entrar no Vault</button>
-            </div>
-
-            <div class="produto-card">
-                <span class="produto-badge">Briefing Diário</span>
-                <h3>Genesis Signal</h3>
-                <p>Briefing diário de 15 minutos: análise macro, contexto PT, 20 ativos com preços reais, on-chain, alertas e plano de ação.</p>
-                <ul class="produto-features">
-                    <li>Briefing automático diário</li>
-                    <li>Contexto macro + Portugal</li>
-                    <li>20 ativos com dados reais (CoinGecko)</li>
-                    <li>Portefólio de referência</li>
-                    <li>On-chain analytics</li>
-                    <li>Alertas estruturados</li>
-                    <li>Plano de ação diário</li>
-                    <li>Lição editorial profunda</li>
-                </ul>
-                <div class="produto-preco">
-                    <div class="produto-preco-valor">€15</div>
-                    <div>Subscrição mensal</div>
-                </div>
-                <button class="cta-primary" onclick="window.location.href='genesis-signal.html'">Ver Genesis Signal</button>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: var(--spacing-xl);">
-            <p style="color: var(--color-text-light-secondary); margin-bottom: var(--spacing-md);">Queres acesso a ambos? Bundle especial.</p>
-            <a href="https://wa.me/351000000000" target="_blank" style="color: var(--color-primary); text-decoration: none; font-weight: 600;">Contacta-nos via WhatsApp</a>
-        </div>
-    </section>
-
-    <section id="comunidade">
-        <h2>Genesis Block Community</h2>
-        <div class="comunidade-section">
-            <h3>O Servidor Discord</h3>
-            <p>Espaço de dúvidas, discussão séria e acompanhamento estruturado. Aqui aprendes com outros e cresces junto.</p>
-
-            <div class="comunidade-structure">
-                <div class="comunidade-canal">
-                    <h4>📢 Informação</h4>
-                    <p>Anúncios, regras, atualizações e recursos.</p>
-                </div>
-                <div class="comunidade-canal">
-                    <h4>🏫 Genesis Vault</h4>
-                    <p>Dúvidas sobre capítulos, módulos e simuladores.</p>
-                </div>
-                <div class="comunidade-canal">
-                    <h4>📊 Genesis Signal</h4>
-                    <p>Discussão dos briefings e análises.</p>
-                </div>
-                <div class="comunidade-canal">
-                    <h4>💬 Comunidade Geral</h4>
-                    <p>Conversas livres e partilha de recursos.</p>
-                </div>
-            </div>
-
-            <a href="https://discord.gg/genesis-placeholder" target="_blank" class="discord-button">Entrar no Discord</a>
-        </div>
-    </section>
-
-    <section>
-        <h2>O que as pessoas dizem</h2>
-        <div class="testemunhos-grid">
-            <div class="testemunho">
-                <p class="testemunho-texto">«Passei de acordar em pânico a ter um plano claro. Não é sobre ganhar mais — é sobre dormir melhor.»</p>
-                <p class="testemunho-autor">A.M., Lisboa</p>
-                <p class="testemunho-profissao">Engenheiro de Software</p>
-            </div>
-            <div class="testemunho">
-                <p class="testemunho-texto">«Aprendi mais em 2 semanas sobre on-chain analytics do que em 2 anos no YouTube.»</p>
-                <p class="testemunho-autor">R.S., Porto</p>
-                <p class="testemunho-profissao">Analista Financeiro</p>
-            </div>
-            <div class="testemunho">
-                <p class="testemunho-texto">«O briefing diário é a rotina que me faltava. 15 minutos, todos os dias, sem drama.»</p>
-                <p class="testemunho-autor">C.P., Covilhã</p>
-                <p class="testemunho-profissao">Empreendedor</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="faq">
-        <h2>Perguntas Frequentes</h2>
-        <div class="faq-section">
-            <div class="accordion-item">
-                <div class="accordion-header">
-                    <span>Quem está por detrás do Genesis?</span>
-                    <span>⬇️</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-body">Uma equipa portuguesa anónima de analistas e educadores. Sem cara pública, sem influenciadores, sem patrocinadores.</div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <div class="accordion-header">
-                    <span>Genesis é aconselhamento financeiro?</span>
-                    <span>⬇️</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-body">Não. Tudo aqui é conteúdo educativo. Explicamos cenários e riscos. Tu decides.</div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <div class="accordion-header">
-                    <span>O que recebo com o Genesis Vault?</span>
-                    <span>⬇️</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-body">13 capítulos + 5 módulos com profundidade rara. Quizzes, simuladores, análise de fiscalidade portuguesa. Acesso vitalício. €20.</div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <div class="accordion-header">
-                    <span>O que recebo com o Genesis Signal?</span>
-                    <span>⬇️</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-body">Briefing diário às 6h: macro, contexto PT, 20 ativos, on-chain, alertas, plano de ação. Subscrição mensal (€15).</div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <div class="accordion-header">
-                    <span>Preciso de experiência prévia?</span>
-                    <span>⬇️</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-body">Não. Genesis começa do zero e escala em profundidade.</div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <div class="accordion-header">
-                    <span>Como funciona o acesso após o pagamento?</span>
-                    <span>⬇️</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-body">Recebes um código único. Introduzis no site e ganhas acesso. O código é válido 90 dias; após expiração, recebes um novo via email.</div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <div class="accordion-header">
-                    <span>Posso cancelar o Signal quando quiser?</span>
-                    <span>⬇️</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-body">Sim. Sem penalidades. Contacta-nos via email ou WhatsApp.</div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Genesis</h4>
-                <p>O mapa sério para quem está farto de se perder no crypto. Educação profunda, sem ruído, sem gurus.</p>
-            </div>
-
-            <div class="footer-section">
-                <h4>Navegação</h4>
-                <ul>
-                    <li><a href="#produtos">Produtos</a></li>
-                    <li><a href="#comunidade">Comunidade</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h4>Contacto</h4>
-                <ul>
-                    <li><a href="mailto:genesis@protonmail.com">genesis@protonmail.com</a></li>
-                    <li><a href="https://wa.me/351000000000" target="_blank">WhatsApp</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-disclaimer">
-            <strong>Aviso Legal:</strong>
-            <p>Nada neste site é aconselhamento financeiro. Todo o conteúdo é educativo. Não tomes decisões de investimento sem avaliares a tua situação pessoal. Genesis não é responsável por perdas financeiras. Criptoativos são altamente voláteis. Investe apenas o que podes perder.</p>
-        </div>
-
-        <div class="footer-bottom">
-            <p>© 2026 Genesis. Equipa anónima portuguesa. Sem patrocinadores.</p>
-        </div>
+        <p>Genesis — Educação em Criptoativos para Portugueses</p>
+        <p>Email: genesis@protonmail.com | <a href="https://discord.gg/genesis" style="color: var(--color-primary); text-decoration: none;">Discord</a></p>
+        <p style="font-size: 0.85rem; margin-top: var(--spacing-lg);">© 2026 Genesis. Todos os direitos reservados.</p>
     </footer>
 
-    <button class="scroll-to-top">↑</button>
-    <a href="https://wa.me/351000000000" target="_blank" class="whatsapp-button">💬</a>
-
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
-        let currentLanguage = localStorage.getItem('genesis-language') || 'pt';
+        // Stripe
+        const stripe = Stripe('pk_test_51TJQ5V1KKQgf4Um11OtkrOo7hZ92qwfKy9LoUyEkMR9soN9GVdU6F49uSdy5ymN2Qf5eCl2L3rzUhutjbDh9ExS700jaHztuTo');
 
-        function initLanguageToggle() {
-            const langButtons = document.querySelectorAll('.lang-btn');
-            langButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    currentLanguage = this.dataset.lang;
-                    localStorage.setItem('genesis-language', currentLanguage);
-                    updateLanguageUI();
-                });
-            });
-            if (currentLanguage !== 'pt') {
-                updateLanguageUI();
-            }
-        }
-
-        function updateLanguageUI() {
-            const langButtons = document.querySelectorAll('.lang-btn');
-            langButtons.forEach(button => {
-                button.classList.remove('active');
-                if (button.dataset.lang === currentLanguage) {
-                    button.classList.add('active');
-                }
-            });
-        }
-
-        function initThemeToggle() {
-            const themeToggle = document.querySelector('.theme-toggle');
-            const savedTheme = localStorage.getItem('genesis-theme') || 'light';
-
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-                themeToggle.textContent = '☀️';
-            }
-
-            themeToggle.addEventListener('click', function() {
-                document.body.classList.toggle('dark-mode');
-                const isDarkMode = document.body.classList.contains('dark-mode');
-                localStorage.setItem('genesis-theme', isDarkMode ? 'dark' : 'light');
-                themeToggle.textContent = isDarkMode ? '☀️' : '🌙';
-            });
-        }
-
-        function initMobileMenu() {
-            const hamburger = document.querySelector('.hamburger');
-            const mobileMenu = document.querySelector('.mobile-menu');
-
-            hamburger.addEventListener('click', function() {
-                hamburger.classList.toggle('active');
-                mobileMenu.classList.toggle('active');
-            });
-
-            const mobileLinks = mobileMenu.querySelectorAll('a, button');
-            mobileLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    hamburger.classList.remove('active');
-                    mobileMenu.classList.remove('active');
-                });
-            });
-        }
-
-        function initProgressBar() {
-            const progressBar = document.querySelector('.progress-bar');
-            window.addEventListener('scroll', function() {
-                const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrolled = (window.scrollY / windowHeight) * 100;
-                progressBar.style.width = scrolled + '%';
-            });
-        }
-
-        const MOCK_PRICES = {
-            'bitcoin': { name: 'BTC', price: 42500, change: 3.2 },
-            'ethereum': { name: 'ETH', price: 2200, change: 1.8 },
-            'solana': { name: 'SOL', price: 145, change: 5.4 },
-            'zro': { name: 'ZRO', price: 12.5, change: -2.1 },
-            'ondo': { name: 'ONDO', price: 8.3, change: 4.7 },
-            'hype': { name: 'HYPE', price: 0.45, change: 8.2 },
-            'luna': { name: 'LUNC', price: 0.0001, change: -15.3 },
-            'qnt': { name: 'QNT', price: 185, change: 2.5 },
-            'ripple': { name: 'XRP', price: 0.95, change: 6.1 },
-            'ena': { name: 'ENA', price: 1.2, change: -1.4 }
-        };
-
-        function initTicker() {
-            const ticker = document.getElementById('ticker');
-            const assets = Object.values(MOCK_PRICES);
-            
-            const tickerHTML = [...assets, ...assets]
-                .map(asset => `
-                    <div class="ticker-item">
-                        <span class="ticker-symbol">${asset.name}</span>
-                        <span class="ticker-price">€${asset.price.toFixed(2)}</span>
-                        <span class="ticker-change ${asset.change >= 0 ? 'positive' : 'negative'}">
-                            ${asset.change >= 0 ? '↑' : '↓'} ${Math.abs(asset.change).toFixed(1)}%
-                        </span>
-                    </div>
-                `)
-                .join('');
-            
-            ticker.innerHTML = tickerHTML;
-        }
-
-        function initScrollToTop() {
-            const scrollToTopBtn = document.querySelector('.scroll-to-top');
-
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 300) {
-                    scrollToTopBtn.classList.add('active');
-                } else {
-                    scrollToTopBtn.classList.remove('active');
-                }
-            });
-
-            scrollToTopBtn.addEventListener('click', function() {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
-
-        function initAccordion() {
-            const accordionHeaders = document.querySelectorAll('.accordion-header');
-
-            accordionHeaders.forEach(header => {
-                header.addEventListener('click', function() {
-                    const item = this.parentElement;
-                    const isActive = item.classList.contains('active');
-
-                    document.querySelectorAll('.accordion-item').forEach(el => {
-                        el.classList.remove('active');
-                    });
-
-                    if (!isActive) {
-                        item.classList.add('active');
-                    }
-                });
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            initLanguageToggle();
-            initThemeToggle();
-            initMobileMenu();
-            initProgressBar();
-            initTicker();
-            initScrollToTop();
-            initAccordion();
+        // Dark Mode
+        const themeToggle = document.querySelector('.theme-toggle');
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            updateThemeIcon();
         });
+
+        function updateThemeIcon() {
+            themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            updateThemeIcon();
+        }
+
+        // Funções de compra
+        async function buyVault() {
+            const email = prompt('Qual é o teu email? (para receber o código)');
+            if (!email) return;
+            if (!email.includes('@')) {
+                alert('Email inválido!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, subscriptionType: 'vault' })
+                });
+
+                const { sessionId, error: resError } = await response.json();
+                if (resError || !sessionId) {
+                    alert(`Erro: ${resError || 'Erro desconhecido'}`);
+                    return;
+                }
+
+                const { error } = await stripe.redirectToCheckout({ sessionId });
+                if (error) alert(`Erro: ${error.message}`);
+            } catch (error) {
+                alert(`Erro: ${error.message}`);
+            }
+        }
+
+        async function buySignal() {
+            const email = prompt('Qual é o teu email? (para receber o briefing)');
+            if (!email) return;
+            if (!email.includes('@')) {
+                alert('Email inválido!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, subscriptionType: 'signal' })
+                });
+
+                const { sessionId, error: resError } = await response.json();
+                if (resError || !sessionId) {
+                    alert(`Erro: ${resError || 'Erro desconhecido'}`);
+                    return;
+                }
+
+                const { error } = await stripe.redirectToCheckout({ sessionId });
+                if (error) alert(`Erro: ${error.message}`);
+            } catch (error) {
+                alert(`Erro: ${error.message}`);
+            }
+        }
+
+        async function buyBundle() {
+            const email = prompt('Qual é o teu email? (para Vault + Signal)');
+            if (!email) return;
+            if (!email.includes('@')) {
+                alert('Email inválido!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, subscriptionType: 'bundle' })
+                });
+
+                const { sessionId, error: resError } = await response.json();
+                if (resError || !sessionId) {
+                    alert(`Erro: ${resError || 'Erro desconhecido'}`);
+                    return;
+                }
+
+                const { error } = await stripe.redirectToCheckout({ sessionId });
+                if (error) alert(`Erro: ${error.message}`);
+            } catch (error) {
+                alert(`Erro: ${error.message}`);
+            }
+        }
+
+        function accessWithCode(type) {
+            const code = prompt(`Introduz o teu código de acesso (${type.toUpperCase()}):`);
+            if (code) {
+                if (type === 'vault') {
+                    window.location.href = `genesis-vault.html?code=${encodeURIComponent(code)}`;
+                } else if (type === 'signal') {
+                    window.location.href = `genesis-signal.html?code=${encodeURIComponent(code)}`;
+                } else {
+                    sessionStorage.setItem('genesis-code', code);
+                    window.location.href = 'genesis-vault.html';
+                }
+            }
+        }
+
+        function toggleFAQ(element) {
+            const parent = element.parentElement;
+            parent.classList.toggle('active');
+        }
+
+        // Verificar se vem do Stripe
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('session_id')) {
+            alert('✅ Pagamento confirmado! Verifica o teu email para o código de acesso.');
+            window.history.replaceState({}, document.title, '/');
+        }
     </script>
 </body>
 </html>
