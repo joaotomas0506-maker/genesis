@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesis Admin Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0F0F0F;
+            color: #E8E8E8;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 1.5rem;
+        }
+        h1 { font-size: 2rem; color: #1E88E5; }
+        .logout {
+            background: #E74C3C;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .stat-card {
+            background: #1A1A1A;
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid #1E88E5;
+        }
+        .stat-number { font-size: 2.5rem; font-weight: 800; color: #1E88E5; }
+        .stat-label { color: #B0B0B0; font-size: 0.9rem; margin-top: 0.5rem; }
+        .section {
+            background: #1A1A1A;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .section h2 { color: #1E88E5; margin-bottom: 1.5rem; font-size: 1.5rem; }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: #0F0F0F;
+            border: 2px solid #333;
+            color: #E8E8E8;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        button {
+            background: #1E88E5;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        button:hover { background: #0D47A1; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #333; }
+        th { background: #0F0F0F; color: #1E88E5; font-weight: 700; }
+        tr:hover { background: #252525; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Genesis Admin</h1>
+            <button class="logout" onclick="logout()">Logout</button>
+        </header>
+
+        <div class="stats" id="stats">Loading...</div>
+
+        <div class="section">
+            <h2>Gerar Códigos (Admin)</h2>
+            <div>
+                <label>Tipo:</label>
+                <select id="codeType">
+                    <option value="vault">Vault (€20)</option>
+                    <option value="signal">Signal (€15/mês)</option>
+                    <option value="bundle">Bundle (€30/mês)</option>
+                </select>
+            </div>
+            <div>
+                <label>Quantidade:</label>
+                <input type="number" id="codeQuantity" value="1" min="1" max="100">
+            </div>
+            <div>
+                <label>Email:</label>
+                <input type="email" id="codeEmail" placeholder="joao@exemplo.pt">
+            </div>
+            <button onclick="generateCodes()">Gerar Códigos</button>
+            <div id="codesResult" style="margin-top: 1rem; background: #0F0F0F; padding: 1rem; border-radius: 8px; display: none;">
+                <textarea id="codesOutput" readonly style="height: 150px; font-family: monospace; width: 100%;"></textarea>
+                <button onclick="copyCodes()" style="margin-top: 1rem; width: auto;">📋 Copiar</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Utilizadores Recentes</h2>
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>Loading...</tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Transações</h2>
+            <table id="transactionsTable">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Valor</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>Loading...</tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function init() {
+            const password = prompt('🔐 Password de Admin:');
+            if (!password) {
+                window.location.href = '/';
+                return;
+            }
+            localStorage.setItem('adminPassword', password);
+            loadDashboard();
+        }
+
+        async function loadDashboard() {
+            const password = localStorage.getItem('adminPassword');
+            
+            const response = await fetch('/api/admin-dashboard', {
+                headers: { 'x-admin-password': password }
+            });
+
+            if (!response.ok) {
+                alert('❌ Password incorreta!');
+                logout();
+                return;
+            }
+
+            const data = await response.json();
+
+            // Stats
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${data.totalUsers}</div>
+                    <div class="stat-label">Total Utilizadores</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.activeUsers}</div>
+                    <div class="stat-label">Ativos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">€${data.totalRevenue.toFixed(2)}</div>
+                    <div class="stat-label">Receita</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.vaultUsers}</div>
+                    <div class="stat-label">Vault</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.signalUsers}</div>
+                    <div class="stat-label">Signal</div>
+                </div>
+            `;
+
+            // Utilizadores
+            document.getElementById('usersTable').querySelector('tbody').innerHTML = data.users
+                .slice(0, 10)
+                .map(u => `
+                    <tr>
+                        <td>${u.email}</td>
+                        <td><strong>${u.subscription_type}</strong></td>
+                        <td><span style="color: ${u.status === 'active' ? '#2ECC71' : '#E74C3C'}">${u.status}</span></td>
+                        <td>${new Date(u.created_at).toLocaleDateString('pt-PT')}</td>
+                    </tr>
+                `).join('');
+
+            // Transações
+            document.getElementById('transactionsTable').querySelector('tbody').innerHTML = data.transactions
+                .slice(0, 10)
+                .map(t => {
+                    const user = data.users.find(u => u.id === t.user_id);
+                    return `
+                        <tr>
+                            <td>${user?.email || '—'}</td>
+                            <td>€${t.amount.toFixed(2)}</td>
+                            <td>${t.transaction_type}</td>
+                            <td><span style="color: #2ECC71">${t.status}</span></td>
+                            <td>${new Date(t.created_at).toLocaleDateString('pt-PT')}</td>
+                        </tr>
+                    `;
+                }).join('');
+        }
+
+        async function generateCodes() {
+            const password = localStorage.getItem('adminPassword');
+            const type = document.getElementById('codeType').value;
+            const quantity = parseInt(document.getElementById('codeQuantity').value);
+            const email = document.getElementById('codeEmail').value || 'admin@genesis.pt';
+
+            const response = await fetch('/api/generate-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-admin-password': password
+                },
+                body: JSON.stringify({ email, subscriptionType: type, quantity })
+            });
+
+            if (response.ok) {
+                const { codes } = await response.json();
+                document.getElementById('codesResult').style.display = 'block';
+                document.getElementById('codesOutput').value = codes.join('\n');
+                alert(`✅ ${quantity} código(s) criado(s)!`);
+                loadDashboard();
+            } else {
+                alert('❌ Erro ao gerar códigos');
+            }
+        }
+
+        function copyCodes() {
+            document.getElementById('codesOutput').select();
+            document.execCommand('copy');
+            alert('✅ Copiado!');
+        }
+
+        function logout() {
+            localStorage.removeItem('adminPassword');
+            window.location.href = '/';
+        }
+
+        init();
+    </script>
+</body>
+</html>
